@@ -1,0 +1,3036 @@
+<!DOCTYPE html>
+<html lang="ja" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LumiDAW DMX — DAW風照明オートメーション＆DMXコントローラー</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            daw: {
+              bg: '#0a0d12',
+              panel: '#12161f',
+              surface: '#191f2c',
+              elevated: '#222a3a',
+              border: '#2a3447',
+              accent: '#06b6d4',
+              amber: '#f59e0b',
+            }
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    /* カスタムスクロールバー（プロ仕様DAWスタイル） */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0e121a;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #2c3649;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #3e4c66;
+    }
+
+    /* レンジスライダーのカスタムデザイン */
+    input[type="range"].daw-slider {
+      -webkit-appearance: none;
+      appearance: none;
+      background: #1e2636;
+      height: 6px;
+      border-radius: 999px;
+      outline: none;
+    }
+    input[type="range"].daw-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #06b6d4;
+      cursor: pointer;
+      border: 2px solid #0f172a;
+      box-shadow: 0 0 8px rgba(6, 182, 212, 0.6);
+      transition: transform 0.1s ease;
+    }
+    input[type="range"].daw-slider::-webkit-slider-thumb:hover {
+      transform: scale(1.15);
+    }
+
+    input[type="range"].master-slider::-webkit-slider-thumb {
+      background: #f59e0b;
+      box-shadow: 0 0 8px rgba(245, 158, 11, 0.6);
+    }
+
+    /* 数値入力のスピンボタン非表示 */
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    /* 選択防止 */
+    .no-select {
+      user-select: none;
+      -webkit-user-select: none;
+    }
+  </style>
+</head>
+<body class="bg-daw-bg text-slate-200 font-sans h-screen flex flex-col overflow-hidden antialiased selection:bg-cyan-500/30">
+
+  <!-- ==================== 1. トップヘッダー（トランスポート＆DMX USB＆プロジェクト） ==================== -->
+  <header class="bg-daw-panel border-b border-daw-border px-3 py-2 flex flex-wrap items-center justify-between gap-2 shrink-0 z-20">
+    <!-- 左：アプリブランド＆プリセット・プロジェクト操作 -->
+    <div class="flex items-center gap-3">
+      <div class="flex items-center gap-2">
+        <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center shadow-lg shadow-cyan-500/20">
+          <!-- 光ビームアイコン SVG -->
+          <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <path d="M9 3h6l1 4H8l1-4z" />
+            <path d="M8 7L3 21h18L16 7" stroke-opacity="0.7" />
+            <circle cx="12" cy="14" r="2" fill="currentColor" />
+          </svg>
+        </div>
+        <div>
+          <div class="flex items-center gap-1.5">
+            <h1 class="font-bold text-sm tracking-wide text-white">LumiDAW <span class="text-cyan-400">DMX</span></h1>
+            <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-cyan-500/10 text-cyan-300 border border-cyan-500/30">512CH</span>
+          </div>
+          <p class="text-[10px] text-slate-400 hidden sm:block">Automation Lighting Workstation</p>
+        </div>
+      </div>
+
+      <div class="h-6 w-px bg-daw-border hidden md:block"></div>
+
+      <!-- プリセット＆プロジェクトメニュー -->
+      <div class="flex items-center gap-1.5">
+        <select id="presetSelect" title="サンプルオートメーション読込" class="bg-daw-surface hover:bg-daw-elevated text-xs text-slate-200 border border-daw-border rounded-lg px-2 py-1.5 outline-none focus:border-cyan-500 transition cursor-pointer">
+          <option value="">プリセット読込...</option>
+          <option value="club_wave">EDM クラブウェーブ (6ch)</option>
+          <option value="sunset_fade">サンセット・ウォームフェード</option>
+          <option value="moving_sweep">ムービング・ダイナミックスイープ</option>
+          <option value="strobe_pulse">リズムパルス＆カラーチェイス</option>
+        </select>
+
+        <button id="btnUndo" title="元に戻す (Ctrl+Z)" class="p-1.5 rounded-lg bg-daw-surface hover:bg-daw-elevated border border-daw-border text-slate-300 hover:text-white disabled:opacity-40 transition" disabled>
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 7v6h6" />
+            <path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13" />
+          </svg>
+        </button>
+
+        <button id="btnExportJson" title="プロジェクトをJSON保存" class="px-2 py-1.5 rounded-lg bg-daw-surface hover:bg-daw-elevated border border-daw-border text-xs text-slate-300 hover:text-white flex items-center gap-1 transition">
+          <svg class="w-3.5 h-3.5 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+            <polyline points="7 10 12 15 17 10" />
+            <line x1="12" y1="15" x2="12" y2="3" />
+          </svg>
+          <span class="hidden xl:inline">保存</span>
+        </button>
+
+        <label title="JSONプロジェクトを読込" class="px-2 py-1.5 rounded-lg bg-daw-surface hover:bg-daw-elevated border border-daw-border text-xs text-slate-300 hover:text-white flex items-center gap-1 cursor-pointer transition">
+          <svg class="w-3.5 h-3.5 text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+            <polyline points="17 8 12 3 7 8" />
+            <line x1="12" y1="3" x2="12" y2="15" />
+          </svg>
+          <span class="hidden xl:inline">読込</span>
+          <input type="file" id="inputImportJson" accept=".json" class="hidden" />
+        </label>
+      </div>
+    </div>
+
+    <!-- 中央：トランスポート＆タイムコード＆グランドマスター -->
+    <div class="flex items-center gap-2 bg-daw-bg/90 border border-daw-border rounded-xl px-2.5 py-1 shadow-inner">
+      <!-- 再生コントロール群 -->
+      <div class="flex items-center gap-1">
+        <button id="btnStop" title="停止（先頭に戻す）" class="p-1.5 rounded-lg hover:bg-daw-elevated text-slate-300 hover:text-white transition">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+            <rect x="6" y="6" width="12" height="12" rx="1.5" />
+          </svg>
+        </button>
+
+        <button id="btnPlayPause" title="再生 / 一時停止 (Space)" class="p-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white shadow-md shadow-emerald-600/30 transition">
+          <svg id="iconPlay" class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+            <polygon points="6 4 20 12 6 20 6 4" />
+          </svg>
+          <svg id="iconPause" class="w-4 h-4 hidden" viewBox="0 0 24 24" fill="currentColor">
+            <rect x="6" y="5" width="4" height="14" rx="1" />
+            <rect x="14" y="5" width="4" height="14" rx="1" />
+          </svg>
+        </button>
+
+        <button id="btnLoop" title="ループ再生 ON/OFF" class="p-1.5 rounded-lg bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 hover:bg-cyan-500/30 transition">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="17 1 21 5 17 9" />
+            <path d="M3 11V9a4 4 0 0 1 4-4h14" />
+            <polyline points="7 23 3 19 7 15" />
+            <path d="M21 13v2a4 4 0 0 1-4 4H3" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- タイムコードLCD表示 -->
+      <div class="bg-[#06080c] border border-slate-800 rounded-lg px-2.5 py-0.5 flex items-center gap-3 font-mono">
+        <div>
+          <div class="text-[9px] text-slate-500 leading-none">BAR.BEAT.TICK</div>
+          <div id="displayBarBeat" class="text-sm font-bold text-cyan-400 tracking-wider">001.1.00</div>
+        </div>
+        <div class="h-5 w-px bg-slate-800"></div>
+        <div class="hidden sm:block">
+          <div class="text-[9px] text-slate-500 leading-none">TIME (SEC)</div>
+          <div id="displayTimeSec" class="text-sm font-semibold text-slate-300">00:00.00</div>
+        </div>
+      </div>
+
+      <!-- BPM 設定 -->
+      <div class="flex items-center gap-1.5 bg-daw-surface px-2 py-1 rounded-lg border border-daw-border">
+        <span class="text-[10px] font-semibold text-slate-400">BPM</span>
+        <input id="inputBpm" type="number" min="40" max="300" value="124" class="w-11 bg-transparent font-mono text-sm font-bold text-amber-400 text-right outline-none" />
+      </div>
+
+      <!-- グランドマスターフェーダー -->
+      <div class="flex items-center gap-2 bg-daw-surface px-2.5 py-1 rounded-lg border border-daw-border" title="グランドマスター (全体のDMX出力スケール)">
+        <span class="text-[10px] font-semibold text-amber-400 whitespace-nowrap">MASTER</span>
+        <input id="grandMasterSlider" type="range" min="0" max="100" value="100" class="daw-slider master-slider w-16 sm:w-20" />
+        <span id="grandMasterValue" class="font-mono text-xs font-bold text-amber-300 w-9 text-right">100%</span>
+      </div>
+    </div>
+
+    <!-- 右：DMX USB インターフェイス接続パネル -->
+    <div class="flex items-center gap-2 bg-daw-surface/90 border border-daw-border rounded-xl px-2.5 py-1">
+      <div class="flex items-center gap-1.5">
+        <span id="usbStatusLed" class="w-2.5 h-2.5 rounded-full bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.8)]"></span>
+        <div class="hidden lg:block">
+          <div id="usbStatusText" class="text-[11px] font-semibold text-slate-200 leading-tight">仮想シミュレーター稼働中</div>
+          <div id="usbDeviceDetail" class="text-[9px] font-mono text-slate-400 leading-tight">Web Serial API 待機</div>
+        </div>
+      </div>
+
+      <select id="dmxProtocolSelect" title="DMX USB 通信プロトコル" class="bg-daw-bg text-xs text-slate-200 border border-daw-border rounded-lg px-2 py-1 outline-none focus:border-cyan-500">
+        <option value="enttec_pro">ENTTEC DMX USB PRO</option>
+        <option value="open_dmx">Open DMX USB (FTDI)</option>
+        <option value="simulator">仮想シミュレーターのみ</option>
+      </select>
+
+      <button id="btnConnectUsb" class="px-2.5 py-1 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold shadow-sm transition flex items-center gap-1 whitespace-nowrap">
+        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 2v10" />
+          <path d="M18.4 6.6a9 9 0 1 1-12.77.04" />
+        </svg>
+        <span id="btnConnectUsbLabel">USBデバイス接続</span>
+      </button>
+
+      <span id="dmxFpsBadge" class="hidden sm:inline-block font-mono text-[10px] px-1.5 py-0.5 rounded bg-daw-bg text-emerald-400 border border-daw-border">35 FPS</span>
+    </div>
+  </header>
+
+  <!-- ==================== 2. オートメーション描画ツールバー＆スムーズ機能 ==================== -->
+  <div class="bg-daw-surface border-b border-daw-border px-3 py-1.5 flex flex-wrap items-center justify-between gap-2 shrink-0 z-10">
+    <!-- 左：6種類の描画・編集ツール -->
+    <div class="flex flex-wrap items-center gap-1.5">
+      <span class="text-[11px] font-semibold text-slate-400 mr-1 hidden md:inline">描画ツール:</span>
+
+      <div id="toolButtonGroup" class="flex items-center bg-daw-bg p-0.5 rounded-lg border border-daw-border gap-0.5">
+        <button data-tool="select" class="tool-btn active px-2 py-1 rounded-md text-xs font-medium flex items-center gap-1 bg-cyan-600 text-white transition" title="選択 / ポイント＆ベジェハンドル編集 (1)">
+          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 3l7.07 16.97 2.51-7.39 7.39-2.51L3 3z" />
+          </svg>
+          <span>選択/編集</span>
+        </button>
+
+        <button data-tool="freehand" class="tool-btn px-2 py-1 rounded-md text-xs font-medium flex items-center gap-1 text-slate-300 hover:bg-daw-elevated transition" title="フリーハンド描画 (2)">
+          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
+          </svg>
+          <span>フリーハンド</span>
+        </button>
+
+        <button data-tool="line" class="tool-btn px-2 py-1 rounded-md text-xs font-medium flex items-center gap-1 text-slate-300 hover:bg-daw-elevated transition" title="直線 (Linear Line) (3)">
+          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="5" y1="19" x2="19" y2="5" />
+            <circle cx="5" cy="19" r="2" fill="currentColor" />
+            <circle cx="19" cy="5" r="2" fill="currentColor" />
+          </svg>
+          <span>直線</span>
+        </button>
+
+        <button data-tool="parabola" class="tool-btn px-2 py-1 rounded-md text-xs font-medium flex items-center gap-1 text-slate-300 hover:bg-daw-elevated transition" title="放物線 (Parabola) (4)">
+          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M4 19Q4 5 20 5" />
+            <circle cx="4" cy="19" r="2" fill="currentColor" />
+            <circle cx="20" cy="5" r="2" fill="currentColor" />
+          </svg>
+          <span>放物線</span>
+        </button>
+
+        <button data-tool="bezier" class="tool-btn px-2 py-1 rounded-md text-xs font-medium flex items-center gap-1 text-slate-300 hover:bg-daw-elevated transition" title="ベジェ曲線 (Cubic Bezier) (5)">
+          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M4 18C4 8 20 16 20 6" />
+            <circle cx="4" cy="18" r="2" fill="currentColor" />
+            <circle cx="20" cy="6" r="2" fill="currentColor" />
+            <line x1="4" y1="18" x2="4" y2="10" stroke-dasharray="2 2" />
+            <line x1="20" y1="6" x2="20" y2="14" stroke-dasharray="2 2" />
+          </svg>
+          <span>ベジェ曲線</span>
+        </button>
+
+        <button data-tool="eraser" class="tool-btn px-2 py-1 rounded-md text-xs font-medium flex items-center gap-1 text-slate-300 hover:bg-daw-elevated transition" title="消しゴム (Eraser) (6)">
+          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="m7 21-4.3-4.3c-1-1-1-2.5 0-3.4l9.6-9.6c1-1 2.5-1 3.4 0l5.6 5.6c1 1 1 2.5 0 3.4L13 21" />
+            <path d="M22 21H7" />
+          </svg>
+          <span>消しゴム</span>
+        </button>
+      </div>
+
+      <!-- 放物線ツール専用オプション（放物線選択時に表示） -->
+      <div id="parabolaOptions" class="hidden items-center gap-1.5 bg-amber-500/10 border border-amber-500/30 rounded-lg px-2 py-1 text-xs">
+        <span class="text-amber-300 font-semibold">放物線タイプ:</span>
+        <select id="parabolaTypeSelect" class="bg-daw-bg text-amber-200 border border-amber-500/40 rounded px-1.5 py-0.5 text-xs outline-none">
+          <option value="convex">凸型 (Ease-Out / 山なり)</option>
+          <option value="concave">凹型 (Ease-In / 谷なり)</option>
+        </select>
+      </div>
+
+      <!-- ベジェツールヒント（ベジェ選択時に表示） -->
+      <div id="bezierOptions" class="hidden items-center gap-1.5 bg-purple-500/10 border border-purple-500/30 rounded-lg px-2 py-1 text-xs text-purple-200">
+        <span>ドラッグで区間作成後、P1/P2ハンドルをドラッグして曲率調整</span>
+      </div>
+    </div>
+
+    <!-- 中央：スムージング（自動滑らか補正）機能パネル -->
+    <div class="flex flex-wrap items-center gap-2 bg-daw-bg/90 border border-daw-border rounded-lg px-2.5 py-1">
+      <div class="flex items-center gap-1.5" title="フリーハンド描画後に移動平均＋RDP間引きで自動平滑化します">
+        <label class="inline-flex items-center cursor-pointer gap-1.5">
+          <input type="checkbox" id="toggleAutoSmooth" checked class="sr-only peer" />
+          <div class="w-8 h-4 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-3 after:w-3 after:transition-all relative peer-checked:bg-cyan-500"></div>
+          <span class="text-xs font-semibold text-cyan-300">自動スムージング</span>
+        </label>
+      </div>
+
+      <div class="flex items-center gap-1.5" title="スムージング強度 (1: 繊細 〜 10: 強力平滑化)">
+        <span class="text-[11px] text-slate-400">強度:</span>
+        <input id="smoothStrengthSlider" type="range" min="1" max="10" value="5" class="daw-slider w-16" />
+        <span id="smoothStrengthValue" class="font-mono text-xs font-bold text-cyan-400 w-4 text-center">5</span>
+      </div>
+
+      <button id="btnSmoothSelectedTrack" class="px-2 py-0.5 rounded bg-cyan-500/15 hover:bg-cyan-500/25 text-cyan-300 border border-cyan-500/40 text-xs font-medium transition flex items-center gap-1" title="現在選択中のトラックのカーブを滑らかに補正します">
+        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M2 12c2.5-5 5.5-5 8 0s5.5 5 8 0 4-3 4-3" />
+        </svg>
+        <span>選択トラックをスムーズ化</span>
+      </button>
+    </div>
+
+    <!-- 右：グリッドスナップ・小節数・ズーム -->
+    <div class="flex items-center gap-2">
+      <div class="flex items-center gap-1 bg-daw-bg border border-daw-border rounded-lg px-2 py-1 text-xs">
+        <span class="text-slate-400">スナップ:</span>
+        <select id="snapSelect" class="bg-transparent text-slate-200 font-mono outline-none cursor-pointer">
+          <option value="0" class="bg-daw-panel">OFF</option>
+          <option value="1" class="bg-daw-panel">1拍 (1/4)</option>
+          <option value="0.5" class="bg-daw-panel" selected>1/2拍 (1/8)</option>
+          <option value="0.25" class="bg-daw-panel">1/4拍 (1/16)</option>
+        </select>
+      </div>
+
+      <div class="flex items-center gap-1 bg-daw-bg border border-daw-border rounded-lg px-2 py-1 text-xs">
+        <span class="text-slate-400">小節:</span>
+        <select id="barsSelect" class="bg-transparent text-slate-200 font-mono outline-none cursor-pointer">
+          <option value="4" class="bg-daw-panel">4 Bar</option>
+          <option value="8" class="bg-daw-panel" selected>8 Bar</option>
+          <option value="16" class="bg-daw-panel">16 Bar</option>
+          <option value="32" class="bg-daw-panel">32 Bar</option>
+        </select>
+      </div>
+
+      <div class="flex items-center gap-1.5 bg-daw-bg border border-daw-border rounded-lg px-2 py-1" title="タイムライン横ズーム">
+        <svg class="w-3.5 h-3.5 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8" />
+          <line x1="21" y1="21" x2="16.65" y2="16.65" />
+          <line x1="11" y1="8" x2="11" y2="14" />
+          <line x1="8" y1="11" x2="14" y2="11" />
+        </svg>
+        <input id="zoomSlider" type="range" min="24" max="140" value="56" class="daw-slider w-16 sm:w-20" />
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== 3. メインDAWワークスペース（トラックリスト ＋ タイムライン） ==================== -->
+  <main class="flex-1 flex flex-col min-h-0 overflow-hidden relative">
+    <!-- タイムライン上部ヘッダー行（左：トラック追加ボタン / 右：ルーラーCanvas） -->
+    <div class="flex border-b border-daw-border bg-daw-panel shrink-0 h-9">
+      <!-- 左ヘッダー（固定幅） -->
+      <div class="w-64 sm:w-72 shrink-0 border-r border-daw-border px-2.5 flex items-center justify-between">
+        <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">DMX Tracks</span>
+        <div class="flex items-center gap-1">
+          <button id="btnOpenAddModal" class="px-2 py-0.5 rounded bg-cyan-600 hover:bg-cyan-500 text-white text-[11px] font-semibold transition flex items-center gap-1">
+            <span>+ CH追加</span>
+          </button>
+          <button id="btnAddRgbFixture" class="px-1.5 py-0.5 rounded bg-daw-elevated hover:bg-slate-700 text-slate-200 border border-daw-border text-[11px] font-medium transition" title="連番の3チャンネル(R/G/B)を一括追加">
+            + RGB
+          </button>
+        </div>
+      </div>
+
+      <!-- 右ルーラーコンテナ（横スクロール同期） -->
+      <div id="rulerScrollWrapper" class="flex-1 overflow-hidden relative bg-[#0e121a] cursor-ew-resize no-select">
+        <canvas id="rulerCanvas" class="block h-full"></canvas>
+      </div>
+    </div>
+
+    <!-- スクロール可能なトラック＆レーン本体 -->
+    <div id="workspaceScrollContainer" class="flex-1 overflow-y-auto overflow-x-hidden relative bg-daw-bg">
+      <div id="tracksContainer" class="flex flex-col divide-y divide-daw-border min-h-full">
+        <!-- JavaScriptで各トラック行（左コントロール＋右オートメーションCanvas）を動的生成 -->
+      </div>
+    </div>
+  </main>
+
+  <!-- ==================== 4. 下部モニタリング＆バーチャルステージパネル ==================== -->
+  <section id="bottomPanel" class="bg-daw-panel border-t border-daw-border shrink-0 flex flex-col transition-all duration-200" style="height: 210px;">
+    <!-- パネルタブ・ヘッダー -->
+    <div class="h-7 bg-daw-surface border-b border-daw-border px-3 flex items-center justify-between shrink-0">
+      <div class="flex items-center gap-4 text-xs">
+        <span class="font-bold text-slate-200 flex items-center gap-1.5">
+          <span class="w-2 h-2 rounded-full bg-cyan-400"></span>
+          リアルタイムモニター＆バーチャルステージ
+        </span>
+        <span class="text-[11px] text-slate-400 hidden md:inline">
+          CH1:ディマー / CH2-4:RGB / CH5-6:パン・チルト連動
+        </span>
+      </div>
+      <div class="flex items-center gap-2">
+        <button id="btnToggleBottomPanel" class="text-[11px] text-slate-400 hover:text-white px-2 py-0.5 rounded bg-daw-bg border border-daw-border">
+          パネル最小化 / 展開
+        </button>
+      </div>
+    </div>
+
+    <!-- パネルコンテンツ（左：バーチャルステージ / 右：512ch DMXマトリクス） -->
+    <div id="bottomPanelBody" class="flex-1 flex flex-col md:flex-row min-h-0 overflow-hidden">
+      <!-- 左：バーチャルステージライトプレビュー -->
+      <div class="w-full md:w-80 lg:w-96 shrink-0 border-b md:border-b-0 md:border-r border-daw-border bg-[#06080c] relative flex flex-col">
+        <canvas id="stageCanvas" class="w-full h-full block"></canvas>
+        <div id="stageReadout" class="absolute bottom-1.5 left-2 right-2 flex justify-between text-[10px] font-mono text-slate-400 bg-black/60 backdrop-blur-sm px-2 py-0.5 rounded border border-white/10 pointer-events-none">
+          <span>DIM: 0%</span>
+          <span>RGB(0, 0, 0)</span>
+          <span>P/T: 128/128</span>
+        </div>
+      </div>
+
+      <!-- 右：512ch DMXユニバースモニター -->
+      <div class="flex-1 flex flex-col min-h-0 bg-daw-bg p-2 overflow-hidden">
+        <div class="flex items-center justify-between mb-1 shrink-0">
+          <span class="text-[11px] font-semibold text-slate-300">512ch DMX ユニバース出力モニター <span class="text-slate-500 font-normal">(チャンネルをクリックでトラック追加/選択)</span></span>
+          <div class="flex items-center gap-2 text-[10px] font-mono text-slate-400">
+            <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-sm bg-slate-800 inline-block"></span>0</span>
+            <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-sm bg-cyan-500/60 inline-block"></span>1-254</span>
+            <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-sm bg-amber-400 inline-block"></span>255</span>
+          </div>
+        </div>
+        <div id="dmxGridContainer" class="flex-1 overflow-y-auto grid grid-cols-16 sm:grid-cols-24 lg:grid-cols-32 gap-0.5 pr-1 content-start" style="grid-template-columns: repeat(auto-fill, minmax(34px, 1fr));">
+          <!-- 512セルをJSで初期化 -->
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== 5. チャンネル追加モーダル ==================== -->
+  <div id="addChannelModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
+    <div class="bg-daw-panel border border-daw-border rounded-2xl w-full max-w-md p-5 shadow-2xl">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-base font-bold text-white">新規DMXチャンネルトラック追加</h2>
+        <button id="btnCloseAddModal" class="text-slate-400 hover:text-white p-1">✕</button>
+      </div>
+
+      <div class="space-y-3 text-sm">
+        <div>
+          <label class="block text-xs font-semibold text-slate-400 mb-1">DMX チャンネル番号 (1 〜 512)</label>
+          <input id="newTrackCh" type="number" min="1" max="512" value="7" class="w-full bg-daw-bg border border-daw-border rounded-lg px-3 py-2 font-mono text-white focus:border-cyan-500 outline-none" />
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-400 mb-1">トラック名（機能・フィクスチャ名）</label>
+          <input id="newTrackName" type="text" placeholder="例: ストロボ速度 / バックライト Amber" value="スポット Strobe" class="w-full bg-daw-bg border border-daw-border rounded-lg px-3 py-2 text-white focus:border-cyan-500 outline-none" />
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-400 mb-1">オートメーションカーブ色</label>
+          <div id="colorPalette" class="flex items-center gap-2">
+            <!-- JSでカラーボタン生成 -->
+          </div>
+        </div>
+      </div>
+
+      <div class="flex justify-end gap-2 mt-6">
+        <button id="btnCancelAddModal" class="px-4 py-2 rounded-lg bg-daw-surface hover:bg-daw-elevated text-slate-300 text-xs font-semibold">キャンセル</button>
+        <button id="btnConfirmAddTrack" class="px-4 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold shadow-lg shadow-cyan-600/20">トラックを追加</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== 6. トースト通知コンテナ ==================== -->
+  <div id="toastContainer" class="fixed bottom-12 right-4 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+  <!-- ==================== JavaScript メインアプリケーションロジック ==================== -->
+  <script>
+    (() => {
+      'use strict';
+
+      /* =========================================================================
+       * 1. アプリケーション状態 (State Management)
+       * ========================================================================= */
+      const TRACK_HEIGHT = 104; // 各オートメーションレーンの高さ(px)
+      const COLOR_PALETTE = [
+        '#fbbf24', // Amber
+        '#f43f5e', // Rose
+        '#10b981', // Emerald
+        '#3b82f6', // Blue
+        '#a855f7', // Purple
+        '#06b6d4', // Cyan
+        '#f97316', // Orange
+        '#ec4899', // Pink
+      ];
+
+      const state = {
+        isPlaying: false,
+        isLooping: true,
+        bpm: 124,
+        totalBars: 8,
+        beatsPerBar: 4,
+        currentBeat: 0,
+        grandMaster: 1.0, // 0.0 〜 1.0
+        pxPerBeat: 56,    // 横ズーム (1拍あたりのピクセル数)
+        scrollLeft: 0,
+        snapBeat: 0.5,    // 0 = OFF, 1 = 1/4, 0.5 = 1/8, 0.25 = 1/16
+
+        // 描画・編集ツール状態
+        activeTool: 'select', // 'select' | 'freehand' | 'line' | 'parabola' | 'bezier' | 'eraser'
+        parabolaType: 'convex', // 'convex' | 'concave'
+        autoSmooth: true,
+        smoothStrength: 5,
+
+        // トラック一覧
+        tracks: [],
+        selectedTrackId: null,
+        selectedPointId: null,
+        activeBezierSegmentTrackId: null,
+        activeBezierSegmentStartId: null, // ベジェ制御ハンドル表示対象の開始ポイントID
+
+        // DMX 512 ユニバースバッファ
+        dmxUniverse: new Uint8Array(512),
+
+        // Web Serial API 状態
+        serial: {
+          protocol: 'enttec_pro', // 'enttec_pro' | 'open_dmx' | 'simulator'
+          port: null,
+          writer: null,
+          isConnected: false,
+          deviceName: '',
+          isSending: false,
+          fps: 35,
+          frameCounter: 0,
+          lastFpsTime: performance.now(),
+        },
+
+        // アンドゥ履歴
+        history: [],
+        newTrackColor: COLOR_PALETTE[5],
+      };
+
+      // ドラッグ操作用の一時状態
+      let interaction = {
+        mode: null, // 'scrub_ruler' | 'drag_point' | 'drag_cp1' | 'drag_cp2' | 'draw_freehand' | 'draw_line' | 'draw_parabola' | 'draw_bezier' | 'erase'
+        trackId: null,
+        pointId: null,
+        startBeat: 0,
+        startValue: 0,
+        currentBeat: 0,
+        currentValue: 0,
+        freehandBuffer: [],
+        hasSavedHistory: false,
+      };
+
+      /* =========================================================================
+       * 2. ユーティリティ＆通知
+       * ========================================================================= */
+      function uid(prefix = 'id') {
+        return `${prefix}_${Math.random().toString(36).slice(2, 9)}`;
+      }
+
+      function clamp(val, min, max) {
+        return Math.max(min, Math.min(max, val));
+      }
+
+      function snapBeatValue(beat) {
+        if (!state.snapBeat || state.snapBeat <= 0) return beat;
+        return Math.round(beat / state.snapBeat) * state.snapBeat;
+      }
+
+      function showToast(message, type = 'info') {
+        const container = document.getElementById('toastContainer');
+        const el = document.createElement('div');
+        const colors = {
+          info: 'bg-daw-elevated border-cyan-500/50 text-slate-100',
+          success: 'bg-emerald-950/90 border-emerald-500/60 text-emerald-200',
+          warning: 'bg-amber-950/90 border-amber-500/60 text-amber-200',
+          error: 'bg-rose-950/90 border-rose-500/60 text-rose-200',
+        };
+        el.className = `px-3.5 py-2 rounded-xl border shadow-xl text-xs font-medium backdrop-blur-md transition-all duration-300 transform translate-y-2 opacity-0 ${colors[type] || colors.info}`;
+        el.textContent = message;
+        container.appendChild(el);
+
+        requestAnimationFrame(() => {
+          el.classList.remove('translate-y-2', 'opacity-0');
+        });
+
+        setTimeout(() => {
+          el.classList.add('opacity-0', 'translate-y-2');
+          setTimeout(() => el.remove(), 300);
+        }, 3200);
+      }
+
+      function pushHistory() {
+        const snapshot = JSON.stringify(state.tracks);
+        if (state.history.length > 0 && state.history[state.history.length - 1] === snapshot) return;
+        state.history.push(snapshot);
+        if (state.history.length > 30) state.history.shift();
+        document.getElementById('btnUndo').disabled = false;
+      }
+
+      function undo() {
+        if (state.history.length === 0) return;
+        const prev = state.history.pop();
+        state.tracks = JSON.parse(prev);
+        document.getElementById('btnUndo').disabled = state.history.length === 0;
+        renderTrackList();
+        renderAllCanvases();
+        showToast('直前の操作を元に戻しました', 'info');
+      }
+
+      /* =========================================================================
+       * 3. 数学・補間・ベジェ曲線・スムージングエンジン
+       * ========================================================================= */
+
+      /**
+       * 3次ベジェ曲線 B(s) において B_x(s) = targetBeat となるパラメータ s ∈ [0, 1] を二分法で求解し、
+       * その s における B_y(s) (DMX値) を返す
+       */
+      function evaluateCubicBezierAtBeat(p0, p1, targetBeat) {
+        const x0 = p0.beat;
+        const x3 = p1.beat;
+        if (x3 <= x0) return p0.value;
+
+        // 単調増加性を保証するため制御点Xを区間内にクランプ
+        const cp1 = p0.cp1 || { beat: x0 + (x3 - x0) / 3, value: p0.value };
+        const cp2 = p0.cp2 || { beat: x0 + ((x3 - x0) * 2) / 3, value: p1.value };
+        const x1 = clamp(cp1.beat, x0, x3);
+        const x2 = clamp(cp2.beat, x0, x3);
+
+        // 二分法で B_x(s) = targetBeat を解く (18回反復で精度 1 / 2^18 ≈ 3.8e-6)
+        let low = 0;
+        let high = 1;
+        let s = 0.5;
+        for (let i = 0; i < 18; i++) {
+          s = 0.5 * (low + high);
+          const inv = 1 - s;
+          const bx =
+            inv * inv * inv * x0 +
+            3 * inv * inv * s * x1 +
+            3 * inv * s * s * x2 +
+            s * s * s * x3;
+          if (bx < targetBeat) {
+            low = s;
+          } else {
+            high = s;
+          }
+        }
+
+        const inv = 1 - s;
+        const by =
+          inv * inv * inv * p0.value +
+          3 * inv * inv * s * cp1.value +
+          3 * inv * s * s * cp2.value +
+          s * s * s * p1.value;
+        return clamp(by, 0, 255);
+      }
+
+      /**
+       * 指定トラックの指定拍 (beat) におけるオートメーション値 (0〜255) を評価
+       */
+      function evaluateTrackAtBeat(track, beat) {
+        const pts = track.points;
+        if (!pts || pts.length === 0) {
+          return track.manualValue ?? 0;
+        }
+        if (beat <= pts[0].beat) {
+          return pts[0].value;
+        }
+        if (beat >= pts[pts.length - 1].beat) {
+          return pts[pts.length - 1].value;
+        }
+
+        // 二分探索で beat を含む区間 [pts[idx], pts[idx+1]] を特定
+        let left = 0;
+        let right = pts.length - 2;
+        let idx = 0;
+        while (left <= right) {
+          const mid = (left + right) >> 1;
+          if (pts[mid].beat <= beat && beat <= pts[mid + 1].beat) {
+            idx = mid;
+            break;
+          } else if (pts[mid + 1].beat < beat) {
+            left = mid + 1;
+          } else {
+            right = mid - 1;
+          }
+        }
+
+        const p0 = pts[idx];
+        const p1 = pts[idx + 1];
+        const span = p1.beat - p0.beat;
+        if (span <= 1e-6) return p0.value;
+
+        if (p0.curveType === 'bezier') {
+          return evaluateCubicBezierAtBeat(p0, p1, beat);
+        }
+
+        // 線形補間 (Linear)
+        const u = (beat - p0.beat) / span;
+        return p0.value + (p1.value - p0.value) * u;
+      }
+
+      /**
+       * スムージングアルゴリズム (均一リサンプリング + 移動平均フィルタ + Ramer-Douglas-Peucker法)
+       * @param {Array<{beat: number, value: number}>} rawPoints
+       * @param {number} strength 1〜10
+       */
+      function smoothAutomationPoints(rawPoints, strength = 5) {
+        if (!rawPoints || rawPoints.length <= 2) return rawPoints;
+
+        // 時間順にソートし、同一beatを統合
+        const sorted = [...rawPoints].sort((a, b) => a.beat - b.beat);
+        const unique = [];
+        for (const pt of sorted) {
+          if (unique.length === 0 || Math.abs(pt.beat - unique[unique.length - 1].beat) > 1e-4) {
+            unique.push({ beat: pt.beat, value: pt.value });
+          } else {
+            unique[unique.length - 1].value = pt.value;
+          }
+        }
+        if (unique.length <= 2) return unique;
+
+        const startBeat = unique[0].beat;
+        const endBeat = unique[unique.length - 1].beat;
+        const duration = endBeat - startBeat;
+        if (duration <= 0.02) return [unique[0], unique[unique.length - 1]];
+
+        // Step 1: 均一ステップ (0.04拍) でリサンプリング
+        const step = 0.04;
+        const sampleCount = Math.max(3, Math.ceil(duration / step) + 1);
+        const samples = [];
+        let srcIdx = 0;
+
+        for (let i = 0; i < sampleCount; i++) {
+          const b = i === sampleCount - 1 ? endBeat : startBeat + i * step;
+          while (srcIdx < unique.length - 2 && unique[srcIdx + 1].beat < b) {
+            srcIdx++;
+          }
+          const p0 = unique[srcIdx];
+          const p1 = unique[srcIdx + 1];
+          const t = p1.beat > p0.beat ? (b - p0.beat) / (p1.beat - p0.beat) : 0;
+          const v = p0.value + (p1.value - p0.value) * clamp(t, 0, 1);
+          samples.push({ beat: b, value: v });
+        }
+
+        // Step 2: 反復移動平均フィルタ (Moving Average Filter)
+        const radius = Math.max(1, Math.round(strength * 1.4));
+        const passes = strength >= 7 ? 3 : strength >= 4 ? 2 : 1;
+        let filtered = samples;
+
+        for (let pass = 0; pass < passes; pass++) {
+          const next = new Array(filtered.length);
+          next[0] = { ...filtered[0] }; // 始点固定
+          next[filtered.length - 1] = { ...filtered[filtered.length - 1] }; // 終点固定
+
+          for (let i = 1; i < filtered.length - 1; i++) {
+            let sum = 0;
+            let weightSum = 0;
+            const localR = Math.min(radius, i, filtered.length - 1 - i);
+            for (let k = -localR; k <= localR; k++) {
+              // 三角重み付き移動平均で自然な滑らかさを実現
+              const w = localR + 1 - Math.abs(k);
+              sum += filtered[i + k].value * w;
+              weightSum += w;
+            }
+            next[i] = {
+              beat: filtered[i].beat,
+              value: sum / weightSum,
+            };
+          }
+          filtered = next;
+        }
+
+        // Step 3: Ramer-Douglas-Peucker (RDP) アルゴリズムによる最適キーフレーム間引き
+        // 時間軸と値軸を正規化して直交距離を評価
+        const epsilon = 0.6 + strength * 1.15; // DMX値換算の許容誤差
+        const simplified = ramerDouglasPeucker(filtered, epsilon, duration);
+
+        return simplified.map((pt) => ({
+          id: uid('pt'),
+          beat: Number(pt.beat.toFixed(4)),
+          value: Math.round(clamp(pt.value, 0, 255)),
+          curveType: 'linear',
+        }));
+      }
+
+      function ramerDouglasPeucker(points, epsilon, totalDuration) {
+        if (points.length <= 2) return points;
+
+        let maxDist = 0;
+        let index = 0;
+        const first = points[0];
+        const last = points[points.length - 1];
+
+        for (let i = 1; i < points.length - 1; i++) {
+          const dist = perpendicularDistance(points[i], first, last, totalDuration);
+          if (dist > maxDist) {
+            maxDist = dist;
+            index = i;
+          }
+        }
+
+        if (maxDist > epsilon) {
+          const left = ramerDouglasPeucker(points.slice(0, index + 1), epsilon, totalDuration);
+          const right = ramerDouglasPeucker(points.slice(index), epsilon, totalDuration);
+          return left.slice(0, -1).concat(right);
+        } else {
+          return [first, last];
+        }
+      }
+
+      function perpendicularDistance(pt, lineStart, lineEnd, totalDuration) {
+        // beatをDMX値(255スケール)相当にスケーリングして視覚的誤差を均一化
+        const scaleX = totalDuration > 0 ? 180 / totalDuration : 1;
+        const x0 = pt.beat * scaleX;
+        const y0 = pt.value;
+        const x1 = lineStart.beat * scaleX;
+        const y1 = lineStart.value;
+        const x2 = lineEnd.beat * scaleX;
+        const y2 = lineEnd.value;
+
+        const dx = x2 - x1;
+        const dy = y2 - y1;
+        const lenSq = dx * dx + dy * dy;
+        if (lenSq === 0) return Math.hypot(x0 - x1, y0 - y1);
+
+        const num = Math.abs(dy * x0 - dx * y0 + x2 * y1 - y2 * x1);
+        return num / Math.sqrt(lenSq);
+      }
+
+      /**
+       * 指定区間 [startBeat, endBeat] の既存ポイントを置き換えて新しいポイント列を挿入
+       */
+      function replaceRangeInTrack(track, startBeat, endBeat, newPoints) {
+        const minB = Math.min(startBeat, endBeat);
+        const maxB = Math.max(startBeat, endBeat);
+        const margin = 1e-4;
+
+        const keptBefore = track.points.filter((p) => p.beat < minB - margin);
+        const keptAfter = track.points.filter((p) => p.beat > maxB + margin);
+
+        // 直前のポイントがベジェ曲線だった場合、終端が変わるので制御点を調整
+        if (keptBefore.length > 0 && newPoints.length > 0) {
+          const prev = keptBefore[keptBefore.length - 1];
+          if (prev.curveType === 'bezier') {
+            prev.curveType = 'linear';
+          }
+        }
+
+        track.points = [...keptBefore, ...newPoints, ...keptAfter].sort((a, b) => a.beat - b.beat);
+      }
+
+      /* =========================================================================
+       * 4. 初期トラック＆プリセットデータ生成
+       * ========================================================================= */
+      function createBezierSegment(b0, v0, b1, v1, cp1Rel, cp2Rel) {
+        const db = b1 - b0;
+        const dv = v1 - v0;
+        return [
+          {
+            id: uid('pt'),
+            beat: b0,
+            value: v0,
+            curveType: 'bezier',
+            cp1: { beat: b0 + db * cp1Rel.t, value: clamp(v0 + dv * cp1Rel.v, 0, 255) },
+            cp2: { beat: b0 + db * cp2Rel.t, value: clamp(v0 + dv * cp2Rel.v, 0, 255) },
+          },
+          {
+            id: uid('pt'),
+            beat: b1,
+            value: v1,
+            curveType: 'linear',
+          },
+        ];
+      }
+
+      function loadPreset(presetName) {
+        pushHistory();
+        const totalBeats = state.totalBars * state.beatsPerBar;
+
+        if (presetName === 'club_wave' || !presetName) {
+          state.tracks = [
+            {
+              id: uid('trk'),
+              channel: 1,
+              name: 'マスターディマー (Dimmer)',
+              color: '#fbbf24',
+              mute: false,
+              solo: false,
+              manualValue: 255,
+              points: [
+                { id: uid('pt'), beat: 0, value: 40, curveType: 'bezier', cp1: { beat: 1.5, value: 255 }, cp2: { beat: 2.5, value: 255 } },
+                { id: uid('pt'), beat: 4, value: 255, curveType: 'linear' },
+                { id: uid('pt'), beat: 8, value: 180, curveType: 'bezier', cp1: { beat: 9.5, value: 40 }, cp2: { beat: 10.5, value: 255 } },
+                { id: uid('pt'), beat: 12, value: 255, curveType: 'linear' },
+                { id: uid('pt'), beat: 16, value: 255, curveType: 'bezier', cp1: { beat: 18, value: 255 }, cp2: { beat: 18.5, value: 80 } },
+                { id: uid('pt'), beat: 20, value: 80, curveType: 'bezier', cp1: { beat: 21.5, value: 80 }, cp2: { beat: 22, value: 255 } },
+                { id: uid('pt'), beat: 24, value: 255, curveType: 'linear' },
+                { id: uid('pt'), beat: 28, value: 255, curveType: 'bezier', cp1: { beat: 30, value: 255 }, cp2: { beat: 30.5, value: 40 } },
+                { id: uid('pt'), beat: 32, value: 40, curveType: 'linear' },
+              ],
+            },
+            {
+              id: uid('trk'),
+              channel: 2,
+              name: 'スポット Red',
+              color: '#f43f5e',
+              mute: false,
+              solo: false,
+              manualValue: 0,
+              points: [
+                { id: uid('pt'), beat: 0, value: 255, curveType: 'bezier', cp1: { beat: 3, value: 255 }, cp2: { beat: 5, value: 0 } },
+                { id: uid('pt'), beat: 8, value: 0, curveType: 'linear' },
+                { id: uid('pt'), beat: 16, value: 30, curveType: 'bezier', cp1: { beat: 18, value: 255 }, cp2: { beat: 21, value: 255 } },
+                { id: uid('pt'), beat: 24, value: 255, curveType: 'linear' },
+                { id: uid('pt'), beat: 32, value: 255, curveType: 'linear' },
+              ],
+            },
+            {
+              id: uid('trk'),
+              channel: 3,
+              name: 'スポット Green',
+              color: '#10b981',
+              mute: false,
+              solo: false,
+              manualValue: 0,
+              points: [
+                { id: uid('pt'), beat: 0, value: 20, curveType: 'bezier', cp1: { beat: 2.5, value: 20 }, cp2: { beat: 5.5, value: 240 } },
+                { id: uid('pt'), beat: 8, value: 240, curveType: 'bezier', cp1: { beat: 11, value: 240 }, cp2: { beat: 13, value: 20 } },
+                { id: uid('pt'), beat: 16, value: 20, curveType: 'linear' },
+                { id: uid('pt'), beat: 24, value: 180, curveType: 'linear' },
+                { id: uid('pt'), beat: 32, value: 20, curveType: 'linear' },
+              ],
+            },
+            {
+              id: uid('trk'),
+              channel: 4,
+              name: 'スポット Blue',
+              color: '#3b82f6',
+              mute: false,
+              solo: false,
+              manualValue: 0,
+              points: [
+                { id: uid('pt'), beat: 0, value: 80, curveType: 'linear' },
+                { id: uid('pt'), beat: 8, value: 180, curveType: 'bezier', cp1: { beat: 11, value: 255 }, cp2: { beat: 13, value: 255 } },
+                { id: uid('pt'), beat: 16, value: 255, curveType: 'bezier', cp1: { beat: 19, value: 255 }, cp2: { beat: 21, value: 40 } },
+                { id: uid('pt'), beat: 24, value: 40, curveType: 'linear' },
+                { id: uid('pt'), beat: 32, value: 120, curveType: 'linear' },
+              ],
+            },
+            {
+              id: uid('trk'),
+              channel: 5,
+              name: 'ムービング Pan (左右)',
+              color: '#a855f7',
+              mute: false,
+              solo: false,
+              manualValue: 128,
+              points: [
+                { id: uid('pt'), beat: 0, value: 30, curveType: 'bezier', cp1: { beat: 3, value: 30 }, cp2: { beat: 5, value: 225 } },
+                { id: uid('pt'), beat: 8, value: 225, curveType: 'bezier', cp1: { beat: 11, value: 225 }, cp2: { beat: 13, value: 30 } },
+                { id: uid('pt'), beat: 16, value: 30, curveType: 'bezier', cp1: { beat: 19, value: 30 }, cp2: { beat: 21, value: 225 } },
+                { id: uid('pt'), beat: 24, value: 225, curveType: 'bezier', cp1: { beat: 27, value: 225 }, cp2: { beat: 29, value: 128 } },
+                { id: uid('pt'), beat: 32, value: 128, curveType: 'linear' },
+              ],
+            },
+            {
+              id: uid('trk'),
+              channel: 6,
+              name: 'ムービング Tilt (上下)',
+              color: '#06b6d4',
+              mute: false,
+              solo: false,
+              manualValue: 128,
+              points: [
+                { id: uid('pt'), beat: 0, value: 170, curveType: 'bezier', cp1: { beat: 2, value: 60 }, cp2: { beat: 6, value: 60 } },
+                { id: uid('pt'), beat: 8, value: 170, curveType: 'bezier', cp1: { beat: 10, value: 220 }, cp2: { beat: 14, value: 220 } },
+                { id: uid('pt'), beat: 16, value: 150, curveType: 'bezier', cp1: { beat: 18, value: 50 }, cp2: { beat: 22, value: 50 } },
+                { id: uid('pt'), beat: 24, value: 190, curveType: 'linear' },
+                { id: uid('pt'), beat: 32, value: 128, curveType: 'linear' },
+              ],
+            },
+          ];
+        } else if (presetName === 'sunset_fade') {
+          state.tracks = [
+            {
+              id: uid('trk'), channel: 1, name: 'マスターディマー (Dimmer)', color: '#fbbf24', mute: false, solo: false, manualValue: 255,
+              points: [
+                { id: uid('pt'), beat: 0, value: 0, curveType: 'bezier', cp1: { beat: 4, value: 180 }, cp2: { beat: 8, value: 255 } },
+                { id: uid('pt'), beat: 16, value: 255, curveType: 'bezier', cp1: { beat: 24, value: 255 }, cp2: { beat: 28, value: 40 } },
+                { id: uid('pt'), beat: 32, value: 0, curveType: 'linear' },
+              ],
+            },
+            {
+              id: uid('trk'), channel: 2, name: 'スポット Red', color: '#f43f5e', mute: false, solo: false, manualValue: 0,
+              points: [
+                { id: uid('pt'), beat: 0, value: 255, curveType: 'linear' },
+                { id: uid('pt'), beat: 20, value: 255, curveType: 'bezier', cp1: { beat: 24, value: 220 }, cp2: { beat: 28, value: 90 } },
+                { id: uid('pt'), beat: 32, value: 60, curveType: 'linear' },
+              ],
+            },
+            {
+              id: uid('trk'), channel: 3, name: 'スポット Green', color: '#10b981', mute: false, solo: false, manualValue: 0,
+              points: [
+                { id: uid('pt'), beat: 0, value: 150, curveType: 'bezier', cp1: { beat: 6, value: 130 }, cp2: { beat: 12, value: 50 } },
+                { id: uid('pt'), beat: 18, value: 20, curveType: 'linear' },
+                { id: uid('pt'), beat: 32, value: 10, curveType: 'linear' },
+              ],
+            },
+            {
+              id: uid('trk'), channel: 4, name: 'スポット Blue', color: '#3b82f6', mute: false, solo: false, manualValue: 0,
+              points: [
+                { id: uid('pt'), beat: 0, value: 10, curveType: 'linear' },
+                { id: uid('pt'), beat: 14, value: 30, curveType: 'bezier', cp1: { beat: 18, value: 160 }, cp2: { beat: 22, value: 230 } },
+                { id: uid('pt'), beat: 32, value: 220, curveType: 'linear' },
+              ],
+            },
+            {
+              id: uid('trk'), channel: 5, name: 'ムービング Pan (左右)', color: '#a855f7', mute: false, solo: false, manualValue: 128,
+              points: [
+                { id: uid('pt'), beat: 0, value: 70, curveType: 'bezier', cp1: { beat: 10, value: 70 }, cp2: { beat: 22, value: 185 } },
+                { id: uid('pt'), beat: 32, value: 185, curveType: 'linear' },
+              ],
+            },
+            {
+              id: uid('trk'), channel: 6, name: 'ムービング Tilt (上下)', color: '#06b6d4', mute: false, solo: false, manualValue: 128,
+              points: [
+                { id: uid('pt'), beat: 0, value: 190, curveType: 'bezier', cp1: { beat: 10, value: 190 }, cp2: { beat: 22, value: 80 } },
+                { id: uid('pt'), beat: 32, value: 80, curveType: 'linear' },
+              ],
+            },
+          ];
+        } else if (presetName === 'moving_sweep') {
+          state.tracks = [
+            {
+              id: uid('trk'), channel: 1, name: 'マスターディマー (Dimmer)', color: '#fbbf24', mute: false, solo: false, manualValue: 255,
+              points: [
+                { id: uid('pt'), beat: 0, value: 255, curveType: 'linear' },
+                { id: uid('pt'), beat: 32, value: 255, curveType: 'linear' },
+              ],
+            },
+            {
+              id: uid('trk'), channel: 2, name: 'スポット Red', color: '#f43f5e', mute: false, solo: false, manualValue: 0,
+              points: [
+                { id: uid('pt'), beat: 0, value: 0, curveType: 'linear' },
+                { id: uid('pt'), beat: 16, value: 255, curveType: 'linear' },
+                { id: uid('pt'), beat: 32, value: 0, curveType: 'linear' },
+              ],
+            },
+            {
+              id: uid('trk'), channel: 3, name: 'スポット Green', color: '#10b981', mute: false, solo: false, manualValue: 0,
+              points: [
+                { id: uid('pt'), beat: 0, value: 220, curveType: 'linear' },
+                { id: uid('pt'), beat: 16, value: 100, curveType: 'linear' },
+                { id: uid('pt'), beat: 32, value: 220, curveType: 'linear' },
+              ],
+            },
+            {
+              id: uid('trk'), channel: 4, name: 'スポット Blue', color: '#3b82f6', mute: false, solo: false, manualValue: 0,
+              points: [
+                { id: uid('pt'), beat: 0, value: 255, curveType: 'linear' },
+                { id: uid('pt'), beat: 16, value: 255, curveType: 'linear' },
+                { id: uid('pt'), beat: 32, value: 255, curveType: 'linear' },
+              ],
+            },
+            {
+              id: uid('trk'), channel: 5, name: 'ムービング Pan (左右)', color: '#a855f7', mute: false, solo: false, manualValue: 128,
+              points: [
+                { id: uid('pt'), beat: 0, value: 15, curveType: 'bezier', cp1: { beat: 2, value: 15 }, cp2: { beat: 2, value: 240 } },
+                { id: uid('pt'), beat: 4, value: 240, curveType: 'bezier', cp1: { beat: 6, value: 240 }, cp2: { beat: 6, value: 15 } },
+                { id: uid('pt'), beat: 8, value: 15, curveType: 'bezier', cp1: { beat: 12, value: 255 }, cp2: { beat: 12, value: 0 } },
+                { id: uid('pt'), beat: 16, value: 240, curveType: 'bezier', cp1: { beat: 20, value: 128 }, cp2: { beat: 24, value: 128 } },
+                { id: uid('pt'), beat: 28, value: 128, curveType: 'linear' },
+                { id: uid('pt'), beat: 32, value: 15, curveType: 'linear' },
+              ],
+            },
+            {
+              id: uid('trk'), channel: 6, name: 'ムービング Tilt (上下)', color: '#06b6d4', mute: false, solo: false, manualValue: 128,
+              points: [
+                { id: uid('pt'), beat: 0, value: 40, curveType: 'bezier', cp1: { beat: 4, value: 230 }, cp2: { beat: 4, value: 230 } },
+                { id: uid('pt'), beat: 8, value: 40, curveType: 'bezier', cp1: { beat: 12, value: 230 }, cp2: { beat: 12, value: 230 } },
+                { id: uid('pt'), beat: 16, value: 40, curveType: 'bezier', cp1: { beat: 20, value: 180 }, cp2: { beat: 24, value: 60 } },
+                { id: uid('pt'), beat: 32, value: 128, curveType: 'linear' },
+              ],
+            },
+          ];
+        } else if (presetName === 'strobe_pulse') {
+          // 1拍ごとのパルス生成
+          const dimPts = [];
+          for (let b = 0; b <= 32; b += 2) {
+            dimPts.push({
+              id: uid('pt'),
+              beat: b,
+              value: 255,
+              curveType: 'bezier',
+              cp1: { beat: b + 0.3, value: 255 },
+              cp2: { beat: b + 0.8, value: 15 },
+            });
+            if (b + 1.8 <= 32) {
+              dimPts.push({ id: uid('pt'), beat: b + 1.8, value: 15, curveType: 'linear' });
+            }
+          }
+          state.tracks = [
+            { id: uid('trk'), channel: 1, name: 'マスターディマー (Pulse)', color: '#fbbf24', mute: false, solo: false, manualValue: 255, points: dimPts },
+            {
+              id: uid('trk'), channel: 2, name: 'スポット Red', color: '#f43f5e', mute: false, solo: false, manualValue: 0,
+              points: [
+                { id: uid('pt'), beat: 0, value: 255, curveType: 'linear' },
+                { id: uid('pt'), beat: 8, value: 0, curveType: 'linear' },
+                { id: uid('pt'), beat: 16, value: 255, curveType: 'linear' },
+                { id: uid('pt'), beat: 24, value: 0, curveType: 'linear' },
+                { id: uid('pt'), beat: 32, value: 255, curveType: 'linear' },
+              ],
+            },
+            {
+              id: uid('trk'), channel: 3, name: 'スポット Green', color: '#10b981', mute: false, solo: false, manualValue: 0,
+              points: [
+                { id: uid('pt'), beat: 0, value: 0, curveType: 'linear' },
+                { id: uid('pt'), beat: 8, value: 255, curveType: 'linear' },
+                { id: uid('pt'), beat: 16, value: 0, curveType: 'linear' },
+                { id: uid('pt'), beat: 24, value: 255, curveType: 'linear' },
+                { id: uid('pt'), beat: 32, value: 0, curveType: 'linear' },
+              ],
+            },
+            {
+              id: uid('trk'), channel: 4, name: 'スポット Blue', color: '#3b82f6', mute: false, solo: false, manualValue: 0,
+              points: [
+                { id: uid('pt'), beat: 0, value: 120, curveType: 'linear' },
+                { id: uid('pt'), beat: 8, value: 255, curveType: 'linear' },
+                { id: uid('pt'), beat: 16, value: 255, curveType: 'linear' },
+                { id: uid('pt'), beat: 24, value: 120, curveType: 'linear' },
+                { id: uid('pt'), beat: 32, value: 255, curveType: 'linear' },
+              ],
+            },
+            {
+              id: uid('trk'), channel: 5, name: 'ムービング Pan (左右)', color: '#a855f7', mute: false, solo: false, manualValue: 128,
+              points: [
+                { id: uid('pt'), beat: 0, value: 40, curveType: 'linear' },
+                { id: uid('pt'), beat: 16, value: 215, curveType: 'linear' },
+                { id: uid('pt'), beat: 32, value: 40, curveType: 'linear' },
+              ],
+            },
+            {
+              id: uid('trk'), channel: 6, name: 'ムービング Tilt (上下)', color: '#06b6d4', mute: false, solo: false, manualValue: 128,
+              points: [
+                { id: uid('pt'), beat: 0, value: 90, curveType: 'bezier', cp1: { beat: 8, value: 210 }, cp2: { beat: 24, value: 50 } },
+                { id: uid('pt'), beat: 32, value: 150, curveType: 'linear' },
+              ],
+            },
+          ];
+        }
+
+        if (state.tracks.length > 0) {
+          state.selectedTrackId = state.tracks[0].id;
+        }
+        renderTrackList();
+        renderAllCanvases();
+      }
+
+      /* =========================================================================
+       * 5. Web Serial API — DMX USB インターフェイス通信エンジン
+       * ========================================================================= */
+      async function connectDmxUsb() {
+        const protocol = document.getElementById('dmxProtocolSelect').value;
+        state.serial.protocol = protocol;
+
+        if (protocol === 'simulator') {
+          updateUsbStatusUI(false, '仮想シミュレーター稼働中', '内部プレビューモード');
+          showToast('仮想シミュレーターモードに切り替えました', 'info');
+          return;
+        }
+
+        if (!('serial' in navigator)) {
+          updateUsbStatusUI(false, 'Web Serial 非対応ブラウザ', 'シミュレーターで継続動作します');
+          showToast('このブラウザはWeb Serial APIに非対応です（Chrome / Edge推奨）。シミュレーターで動作します。', 'warning');
+          return;
+        }
+
+        try {
+          const port = await navigator.serial.requestPort();
+          const info = port.getInfo ? port.getInfo() : {};
+          const vidPid =
+            info.usbVendorId && info.usbProductId
+              ? `VID:${info.usbVendorId.toString(16).toUpperCase().padStart(4, '0')} PID:${info.usbProductId.toString(16).toUpperCase().padStart(4, '0')}`
+              : 'USB Serial DMX Interface';
+
+          if (protocol === 'enttec_pro') {
+            await port.open({
+              baudRate: 57600,
+              dataBits: 8,
+              stopBits: 1,
+              parity: 'none',
+              flowControl: 'none',
+            });
+          } else {
+            // Open DMX USB (FTDI)
+            await port.open({
+              baudRate: 250000,
+              dataBits: 8,
+              stopBits: 2,
+              parity: 'none',
+              flowControl: 'none',
+            });
+          }
+
+          state.serial.port = port;
+          state.serial.writer = port.writable.getWriter();
+          state.serial.isConnected = true;
+          state.serial.deviceName = vidPid;
+
+          updateUsbStatusUI(true, `接続済み (${protocol === 'enttec_pro' ? 'ENTTEC PRO' : 'Open DMX'})`, vidPid);
+          showToast(`DMX USBインターフェイスを認識・接続しました (${vidPid})`, 'success');
+
+          // 切断検知リスナー
+          port.addEventListener('disconnect', () => {
+            disconnectDmxUsb(true);
+          });
+        } catch (err) {
+          console.warn('Web Serial Connection Notice:', err);
+          if (err.name === 'NotFoundError') {
+            showToast('USBデバイスの選択がキャンセルされました', 'info');
+          } else {
+            updateUsbStatusUI(false, '接続待機 / シミュレーター', '実機未接続でも全機能利用可能');
+            showToast(`USB接続できませんでした: ${err.message}（シミュレーターで継続動作します）`, 'warning');
+          }
+        }
+      }
+
+      async function disconnectDmxUsb(unexpected = false) {
+        state.serial.isConnected = false;
+        try {
+          if (state.serial.writer) {
+            await state.serial.writer.close();
+            state.serial.writer.releaseLock();
+          }
+          if (state.serial.port) {
+            await state.serial.port.close();
+          }
+        } catch (e) {
+          console.warn('Serial close error:', e);
+        }
+        state.serial.writer = null;
+        state.serial.port = null;
+        updateUsbStatusUI(false, '仮想シミュレーター稼働中', unexpected ? 'USBケーブルが切断されました' : '切断済み');
+        if (unexpected) {
+          showToast('DMX USBデバイスが切断されました', 'warning');
+        } else {
+          showToast('DMX USBデバイスを切断しました', 'info');
+        }
+      }
+
+      function updateUsbStatusUI(connected, title, detail) {
+        const led = document.getElementById('usbStatusLed');
+        const textEl = document.getElementById('usbStatusText');
+        const detailEl = document.getElementById('usbDeviceDetail');
+        const btnLabel = document.getElementById('btnConnectUsbLabel');
+        const btn = document.getElementById('btnConnectUsb');
+
+        textEl.textContent = title;
+        detailEl.textContent = detail;
+
+        if (connected) {
+          led.className = 'w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-[0_0_10px_rgba(52,211,153,0.9)]';
+          btnLabel.textContent = '切断する';
+          btn.className = 'px-2.5 py-1 rounded-lg bg-rose-600 hover:bg-rose-500 text-white text-xs font-semibold shadow-sm transition flex items-center gap-1 whitespace-nowrap';
+        } else {
+          led.className = 'w-2.5 h-2.5 rounded-full bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.8)]';
+          btnLabel.textContent = 'USBデバイス接続';
+          btn.className = 'px-2.5 py-1 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold shadow-sm transition flex items-center gap-1 whitespace-nowrap';
+        }
+      }
+
+      /**
+       * 約35HzでDMXフレームを送信するストリーミングループ
+       */
+      async function sendDmxFrameLoop() {
+        const now = performance.now();
+        state.serial.frameCounter++;
+        if (now - state.serial.lastFpsTime >= 1000) {
+          state.serial.fps = state.serial.frameCounter;
+          state.serial.frameCounter = 0;
+          state.serial.lastFpsTime = now;
+          document.getElementById('dmxFpsBadge').textContent = `${state.serial.fps} FPS`;
+        }
+
+        if (state.serial.isConnected && state.serial.writer && !state.serial.isSending) {
+          state.serial.isSending = true;
+          try {
+            if (state.serial.protocol === 'enttec_pro') {
+              // ENTTEC DMX USB PRO パケット (518 bytes)
+              const packet = new Uint8Array(518);
+              packet[0] = 0x7e; // Start of Message
+              packet[1] = 6;    // Label 6: Output Only Send DMX Packet
+              packet[2] = 0x01; // Data length LSB (513 & 0xFF)
+              packet[3] = 0x02; // Data length MSB (513 >> 8)
+              packet[4] = 0x00; // DMX Start Code
+              packet.set(state.dmxUniverse, 5);
+              packet[517] = 0xe7; // End of Message
+              await state.serial.writer.write(packet);
+            } else if (state.serial.protocol === 'open_dmx') {
+              // Open DMX USB (FTDI): Break信号 + StartCode(0x00) + 512ch
+              await state.serial.port.setSignals({ break: true });
+              await new Promise((r) => setTimeout(r, 1));
+              await state.serial.port.setSignals({ break: false });
+              const frame = new Uint8Array(513);
+              frame[0] = 0x00;
+              frame.set(state.dmxUniverse, 1);
+              await state.serial.writer.write(frame);
+            }
+          } catch (err) {
+            console.error('DMX Transmit Error:', err);
+            await disconnectDmxUsb(true);
+          } finally {
+            state.serial.isSending = false;
+          }
+        }
+      }
+
+      /* =========================================================================
+       * 6. DMXユニバース評価＆モニター更新
+       * ========================================================================= */
+      let dmxGridCells = [];
+
+      function initDmxGridMonitor() {
+        const container = document.getElementById('dmxGridContainer');
+        container.innerHTML = '';
+        dmxGridCells = [];
+
+        const frag = document.createDocumentFragment();
+        for (let ch = 1; ch <= 512; ch++) {
+          const cell = document.createElement('button');
+          cell.type = 'button';
+          cell.title = `DMX CH ${ch} (クリックでトラック追加/選択)`;
+          cell.className = 'h-7 rounded bg-slate-900/90 border border-slate-800/90 flex flex-col items-center justify-center leading-none hover:border-cyan-400 transition cursor-pointer';
+          cell.innerHTML = `
+            <span class="text-[8px] font-mono text-slate-500">${ch}</span>
+            <span class="val text-[10px] font-mono font-semibold text-slate-300">0</span>
+          `;
+          cell.addEventListener('click', () => {
+            const existing = state.tracks.find((t) => t.channel === ch);
+            if (existing) {
+              state.selectedTrackId = existing.id;
+              renderTrackList();
+              renderAllCanvases();
+              showToast(`CH ${ch} (${existing.name}) を選択しました`, 'info');
+            } else {
+              addTrack(ch, `DMX CH ${ch}`, COLOR_PALETTE[(ch - 1) % COLOR_PALETTE.length]);
+              showToast(`DMX CH ${ch} トラックを追加しました`, 'success');
+            }
+          });
+          frag.appendChild(cell);
+          dmxGridCells.push(cell);
+        }
+        container.appendChild(frag);
+      }
+
+      function updateDmxValuesAndMonitors() {
+        // DMXユニバースをリセット
+        state.dmxUniverse.fill(0);
+
+        const anySolo = state.tracks.some((t) => t.solo);
+
+        for (const track of state.tracks) {
+          const isMuted = track.mute || (anySolo && !track.solo);
+          const rawVal = isMuted ? 0 : evaluateTrackAtBeat(track, state.currentBeat);
+          const scaledVal = Math.round(clamp(rawVal * state.grandMaster, 0, 255));
+          track.currentOutput = scaledVal;
+
+          const chIdx = clamp(Math.round(track.channel), 1, 512) - 1;
+          // 同一チャンネルに複数トラックがある場合はHTP (Highest Takes Precedence) 方式で合成
+          if (scaledVal > state.dmxUniverse[chIdx]) {
+            state.dmxUniverse[chIdx] = scaledVal;
+          }
+
+          // トラックヘッダーのリアルタイム値UIを更新
+          const valEl = document.getElementById(`trk_val_${track.id}`);
+          const barEl = document.getElementById(`trk_bar_${track.id}`);
+          if (valEl) valEl.textContent = scaledVal;
+          if (barEl) barEl.style.width = `${(scaledVal / 255) * 100}%`;
+        }
+
+        // 512ch グリッドモニター更新
+        for (let i = 0; i < 512; i++) {
+          const v = state.dmxUniverse[i];
+          const cell = dmxGridCells[i];
+          if (!cell) continue;
+          if (cell._lastVal === v) continue;
+          cell._lastVal = v;
+
+          const valSpan = cell.querySelector('.val');
+          valSpan.textContent = v;
+
+          if (v === 0) {
+            cell.style.backgroundColor = 'rgba(15, 23, 42, 0.9)';
+            valSpan.className = 'val text-[10px] font-mono font-medium text-slate-500';
+          } else if (v === 255) {
+            cell.style.backgroundColor = 'rgba(245, 158, 11, 0.35)';
+            valSpan.className = 'val text-[10px] font-mono font-bold text-amber-300';
+          } else {
+            const alpha = (0.12 + (v / 255) * 0.45).toFixed(2);
+            cell.style.backgroundColor = `rgba(6, 182, 212, ${alpha})`;
+            valSpan.className = 'val text-[10px] font-mono font-bold text-cyan-200';
+          }
+        }
+
+        renderVirtualStage();
+      }
+
+      /* =========================================================================
+       * 7. バーチャルステージライトプレビュー (HTML5 Canvas)
+       * ========================================================================= */
+      function renderVirtualStage() {
+        const canvas = document.getElementById('stageCanvas');
+        if (!canvas) return;
+        const rect = canvas.getBoundingClientRect();
+        if (rect.width === 0 || rect.height === 0) return;
+
+        const dpr = window.devicePixelRatio || 1;
+        const w = Math.floor(rect.width * dpr);
+        const h = Math.floor(rect.height * dpr);
+        if (canvas.width !== w || canvas.height !== h) {
+          canvas.width = w;
+          canvas.height = h;
+        }
+
+        const ctx = canvas.getContext('2d');
+        ctx.save();
+        ctx.scale(dpr, dpr);
+        const cw = rect.width;
+        const ch = rect.height;
+
+        // 暗闇のステージ背景
+        const bgGrad = ctx.createLinearGradient(0, 0, 0, ch);
+        bgGrad.addColorStop(0, '#05070b');
+        bgGrad.addColorStop(0.72, '#0b101b');
+        bgGrad.addColorStop(1, '#121927');
+        ctx.fillStyle = bgGrad;
+        ctx.fillRect(0, 0, cw, ch);
+
+        // ステージ床面グリッド線
+        const floorY = ch * 0.72;
+        ctx.strokeStyle = 'rgba(148, 163, 184, 0.12)';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(0, floorY);
+        ctx.lineTo(cw, floorY);
+        ctx.stroke();
+
+        for (let i = -4; i <= 4; i++) {
+          ctx.beginPath();
+          ctx.moveTo(cw * 0.5 + i * (cw * 0.1), floorY);
+          ctx.lineTo(cw * 0.5 + i * (cw * 0.18), ch);
+          ctx.stroke();
+        }
+
+        // 上部トラスバー
+        const trussY = 18;
+        ctx.fillStyle = '#1e293b';
+        ctx.fillRect(cw * 0.12, trussY - 3, cw * 0.76, 6);
+        ctx.strokeStyle = '#334155';
+        ctx.strokeRect(cw * 0.12, trussY - 3, cw * 0.76, 6);
+
+        // CH1〜CH6の値を取得
+        const dimmer = state.dmxUniverse[0] / 255; // CH1
+        const r = state.dmxUniverse[1];          // CH2
+        const g = state.dmxUniverse[2];          // CH3
+        const b = state.dmxUniverse[3];          // CH4
+        const pan = state.dmxUniverse[4];        // CH5 (0=左, 128=中央, 255=右)
+        const tilt = state.dmxUniverse[5];       // CH6 (0=手前/下, 128=中央, 255=奥/上)
+
+        // 3灯のバーチャルムービングヘッドを描画（中央メイン＋左右シンメトリー連動）
+        const fixtures = [
+          { xRatio: 0.25, panMirror: -1, scale: 0.85 },
+          { xRatio: 0.50, panMirror: 1, scale: 1.0 },
+          { xRatio: 0.75, panMirror: 1, scale: 0.85 },
+        ];
+
+        const panNorm = ((pan - 128) / 128); // -1.0 〜 +1.0
+        const tiltNorm = (tilt / 255);       // 0.0 〜 1.0
+
+        fixtures.forEach((fix) => {
+          const headX = cw * fix.xRatio;
+          const headY = trussY + 8;
+
+          // ターゲット床面座標
+          const targetX = headX + panNorm * fix.panMirror * (cw * 0.28);
+          const targetY = floorY + (1 - tiltNorm) * (ch - floorY - 12);
+
+          // ボリューメトリック光ビーム描画
+          if (dimmer > 0.01 && (r > 0 || g > 0 || b > 0)) {
+            const beamWidth = (24 + (1 - tiltNorm) * 18) * fix.scale;
+            const angle = Math.atan2(targetY - headY, targetX - headX);
+            const perpX = -Math.sin(angle);
+            const perpY = Math.cos(angle);
+
+            const beamGrad = ctx.createLinearGradient(headX, headY, targetX, targetY);
+            const alphaTop = (0.55 * dimmer).toFixed(3);
+            const alphaBot = (0.08 * dimmer).toFixed(3);
+            beamGrad.addColorStop(0, `rgba(${r}, ${g}, ${b}, ${alphaTop})`);
+            beamGrad.addColorStop(1, `rgba(${r}, ${g}, ${b}, ${alphaBot})`);
+
+            ctx.save();
+            ctx.globalCompositeOperation = 'screen';
+            ctx.fillStyle = beamGrad;
+            ctx.beginPath();
+            ctx.moveTo(headX + perpX * 5, headY + perpY * 5);
+            ctx.lineTo(targetX + perpX * beamWidth, targetY + perpY * beamWidth);
+            ctx.lineTo(targetX - perpX * beamWidth, targetY - perpY * beamWidth);
+            ctx.lineTo(headX - perpX * 5, headY - perpY * 5);
+            ctx.closePath();
+            ctx.fill();
+
+            // 床面のスポットライト照射楕円
+            const spotGrad = ctx.createRadialGradient(targetX, targetY, 2, targetX, targetY, beamWidth * 1.15);
+            spotGrad.addColorStop(0, `rgba(${r}, ${g}, ${b}, ${(0.75 * dimmer).toFixed(3)})`);
+            spotGrad.addColorStop(0.6, `rgba(${r}, ${g}, ${b}, ${(0.25 * dimmer).toFixed(3)})`);
+            spotGrad.addColorStop(1, `rgba(${r}, ${g}, ${b}, 0)`);
+
+            ctx.fillStyle = spotGrad;
+            ctx.beginPath();
+            ctx.ellipse(targetX, targetY, beamWidth * 1.15, beamWidth * 0.42, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+          }
+
+          // ムービングヘッド筐体描画
+          ctx.fillStyle = '#334155';
+          ctx.beginPath();
+          ctx.roundRect(headX - 8, headY - 6, 16, 12, 3);
+          ctx.fill();
+
+          // レンズ発光
+          ctx.fillStyle = dimmer > 0.02 ? `rgba(${r}, ${g}, ${b}, ${Math.max(0.25, dimmer)})` : '#0f172a';
+          ctx.beginPath();
+          ctx.arc(headX, headY + 4, 4.5, 0, Math.PI * 2);
+          ctx.fill();
+        });
+
+        // 数値リードアウト更新
+        const readout = document.getElementById('stageReadout');
+        if (readout) {
+          readout.innerHTML = `
+            <span>DIM: ${Math.round(dimmer * 100)}%</span>
+            <span style="color: rgb(${Math.max(120, r)}, ${Math.max(120, g)}, ${Math.max(120, b)})">RGB(${r}, ${g}, ${b})</span>
+            <span>P/T: ${pan}/${tilt}</span>
+          `;
+        }
+
+        ctx.restore();
+      }
+
+      /* =========================================================================
+       * 8. トラックリストUI描画＆管理
+       * ========================================================================= */
+      function addTrack(channel, name, color) {
+        pushHistory();
+        const ch = clamp(parseInt(channel, 10) || 1, 1, 512);
+        const totalBeats = state.totalBars * state.beatsPerBar;
+        const newTrack = {
+          id: uid('trk'),
+          channel: ch,
+          name: name || `DMX CH ${ch}`,
+          color: color || COLOR_PALETTE[state.tracks.length % COLOR_PALETTE.length],
+          mute: false,
+          solo: false,
+          manualValue: 0,
+          points: [
+            { id: uid('pt'), beat: 0, value: 0, curveType: 'linear' },
+            { id: uid('pt'), beat: totalBeats, value: 0, curveType: 'linear' },
+          ],
+        };
+        state.tracks.push(newTrack);
+        state.selectedTrackId = newTrack.id;
+        renderTrackList();
+        renderAllCanvases();
+      }
+
+      function renderTrackList() {
+        const container = document.getElementById('tracksContainer');
+        container.innerHTML = '';
+
+        state.tracks.forEach((track) => {
+          const isSelected = track.id === state.selectedTrackId;
+          const row = document.createElement('div');
+          row.className = `flex shrink-0 transition-colors ${isSelected ? 'bg-daw-surface/60' : 'bg-daw-bg'}`;
+          row.style.height = `${TRACK_HEIGHT}px`;
+
+          // 左側：トラックコントロールパネル
+          const ctrl = document.createElement('div');
+          ctrl.className = `w-64 sm:w-72 shrink-0 border-r border-daw-border px-2.5 py-2 flex flex-col justify-between relative cursor-pointer ${
+            isSelected ? 'bg-[#1a2232]' : 'bg-daw-panel hover:bg-daw-surface/80'
+          }`;
+
+          // 左端カラーインジケーターバー
+          const colorStrip = document.createElement('div');
+          colorStrip.className = 'absolute left-0 top-0 bottom-0 w-1.5';
+          colorStrip.style.backgroundColor = track.color;
+          ctrl.appendChild(colorStrip);
+
+          // 選択時のトラック切替
+          ctrl.addEventListener('pointerdown', (e) => {
+            if (e.target.closest('button') || e.target.closest('input')) return;
+            if (state.selectedTrackId !== track.id) {
+              state.selectedTrackId = track.id;
+              renderTrackList();
+              renderAllCanvases();
+            }
+          });
+
+          // 上段：CH番号、トラック名、削除ボタン
+          const topRow = document.createElement('div');
+          topRow.className = 'flex items-center gap-1.5 pl-1';
+          topRow.innerHTML = `
+            <div class="flex items-center bg-daw-bg border border-daw-border rounded px-1 py-0.5" title="DMXチャンネル (1-512)">
+              <span class="text-[9px] font-mono text-slate-500 mr-0.5">CH</span>
+              <input type="number" min="1" max="512" value="${track.channel}" class="ch-input w-8 bg-transparent font-mono text-xs font-bold text-cyan-400 outline-none text-right" />
+            </div>
+            <input type="text" value="${escapeHtml(track.name)}" class="name-input flex-1 min-w-0 bg-transparent text-xs font-semibold text-slate-100 focus:bg-daw-bg focus:px-1.5 focus:py-0.5 rounded outline-none truncate" />
+            <button type="button" class="btn-clear text-slate-500 hover:text-amber-400 p-1 rounded transition" title="カーブをリセット">
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                <path d="M3 3v5h5" />
+              </svg>
+            </button>
+            <button type="button" class="btn-del text-slate-500 hover:text-rose-400 p-1 rounded transition" title="トラック削除">
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="3 6 5 6 21 6" />
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+              </svg>
+            </button>
+          `;
+
+          // イベント紐付け
+          topRow.querySelector('.ch-input').addEventListener('change', (e) => {
+            pushHistory();
+            track.channel = clamp(parseInt(e.target.value, 10) || 1, 1, 512);
+            e.target.value = track.channel;
+            updateDmxValuesAndMonitors();
+          });
+
+          topRow.querySelector('.name-input').addEventListener('change', (e) => {
+            pushHistory();
+            track.name = e.target.value.trim() || `DMX CH ${track.channel}`;
+          });
+
+          topRow.querySelector('.btn-clear').addEventListener('click', () => {
+            pushHistory();
+            const totalBeats = state.totalBars * state.beatsPerBar;
+            track.points = [
+              { id: uid('pt'), beat: 0, value: 0, curveType: 'linear' },
+              { id: uid('pt'), beat: totalBeats, value: 0, curveType: 'linear' },
+            ];
+            renderAllCanvases();
+            updateDmxValuesAndMonitors();
+            showToast(`${track.name} のカーブを初期化しました`, 'info');
+          });
+
+          topRow.querySelector('.btn-del').addEventListener('click', () => {
+            pushHistory();
+            state.tracks = state.tracks.filter((t) => t.id !== track.id);
+            if (state.selectedTrackId === track.id) {
+              state.selectedTrackId = state.tracks[0]?.id || null;
+            }
+            renderTrackList();
+            renderAllCanvases();
+            updateDmxValuesAndMonitors();
+            showToast(`トラック「${track.name}」を削除しました`, 'info');
+          });
+
+          // 下段：Mute / Solo ボタン ＆ リアルタイムDMX値バー
+          const botRow = document.createElement('div');
+          botRow.className = 'flex items-center justify-between gap-2 pl-1';
+          botRow.innerHTML = `
+            <div class="flex items-center gap-1">
+              <button type="button" class="btn-mute w-6 h-5 rounded text-[10px] font-bold border transition ${
+                track.mute
+                  ? 'bg-rose-600 text-white border-rose-400 shadow-sm'
+                  : 'bg-daw-bg text-slate-400 border-daw-border hover:text-white'
+              }" title="ミュート (M)">M</button>
+              <button type="button" class="btn-solo w-6 h-5 rounded text-[10px] font-bold border transition ${
+                track.solo
+                  ? 'bg-amber-500 text-slate-950 border-amber-300 shadow-sm'
+                  : 'bg-daw-bg text-slate-400 border-daw-border hover:text-white'
+              }" title="ソロ (S)">S</button>
+            </div>
+
+            <div class="flex-1 flex items-center gap-2 bg-daw-bg/90 border border-daw-border rounded px-2 py-1">
+              <div class="flex-1 h-2 bg-slate-800 rounded-full overflow-hidden">
+                <div id="trk_bar_${track.id}" class="h-full transition-all duration-75 rounded-full" style="width: 0%; background-color: ${track.color};"></div>
+              </div>
+              <span id="trk_val_${track.id}" class="font-mono text-xs font-bold text-slate-200 w-7 text-right">0</span>
+            </div>
+          `;
+
+          botRow.querySelector('.btn-mute').addEventListener('click', () => {
+            track.mute = !track.mute;
+            renderTrackList();
+            updateDmxValuesAndMonitors();
+          });
+
+          botRow.querySelector('.btn-solo').addEventListener('click', () => {
+            track.solo = !track.solo;
+            renderTrackList();
+            updateDmxValuesAndMonitors();
+          });
+
+          ctrl.appendChild(topRow);
+          ctrl.appendChild(botRow);
+
+          // 右側：オートメーションタイムラインCanvasコンテナ
+          const laneWrapper = document.createElement('div');
+          laneWrapper.className = 'flex-1 relative overflow-hidden bg-[#0c1018] no-select';
+
+          const canvas = document.createElement('canvas');
+          canvas.id = `lane_canvas_${track.id}`;
+          canvas.dataset.trackId = track.id;
+          canvas.className = 'block w-full h-full cursor-crosshair';
+          attachLaneCanvasEvents(canvas, track);
+
+          laneWrapper.appendChild(canvas);
+          row.appendChild(ctrl);
+          row.appendChild(laneWrapper);
+          container.appendChild(row);
+        });
+      }
+
+      function escapeHtml(str) {
+        return String(str)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;');
+      }
+
+      /* =========================================================================
+       * 9. タイムライン＆ルーラー Canvas 描画エンジン
+       * ========================================================================= */
+      function beatToX(beat) {
+        return beat * state.pxPerBeat - state.scrollLeft;
+      }
+
+      function xToBeat(x) {
+        const totalBeats = state.totalBars * state.beatsPerBar;
+        return clamp((x + state.scrollLeft) / state.pxPerBeat, 0, totalBeats);
+      }
+
+      function valueToY(val, height) {
+        const pad = 8;
+        const innerH = height - pad * 2;
+        return pad + innerH * (1 - clamp(val, 0, 255) / 255);
+      }
+
+      function yToValue(y, height) {
+        const pad = 8;
+        const innerH = height - pad * 2;
+        const norm = 1 - (y - pad) / innerH;
+        return Math.round(clamp(norm * 255, 0, 255));
+      }
+
+      function renderRulerCanvas() {
+        const canvas = document.getElementById('rulerCanvas');
+        if (!canvas) return;
+        const wrapper = document.getElementById('rulerScrollWrapper');
+        const rect = wrapper.getBoundingClientRect();
+        if (rect.width === 0 || rect.height === 0) return;
+
+        const dpr = window.devicePixelRatio || 1;
+        const w = Math.floor(rect.width * dpr);
+        const h = Math.floor(rect.height * dpr);
+        if (canvas.width !== w || canvas.height !== h) {
+          canvas.width = w;
+          canvas.height = h;
+        }
+
+        const ctx = canvas.getContext('2d');
+        ctx.save();
+        ctx.scale(dpr, dpr);
+        const cw = rect.width;
+        const ch = rect.height;
+
+        ctx.fillStyle = '#0e121a';
+        ctx.fillRect(0, 0, cw, ch);
+
+        const totalBeats = state.totalBars * state.beatsPerBar;
+
+        // ループ範囲ハイライトバー
+        if (state.isLooping) {
+          const x0 = beatToX(0);
+          const x1 = beatToX(totalBeats);
+          ctx.fillStyle = 'rgba(6, 182, 212, 0.14)';
+          ctx.fillRect(x0, 0, x1 - x0, 5);
+          ctx.fillStyle = '#06b6d4';
+          ctx.fillRect(x0, 0, x1 - x0, 2);
+        }
+
+        // 小節・拍目盛り描画
+        ctx.font = '600 10px "JetBrains Mono", monospace';
+        ctx.textBaseline = 'middle';
+
+        for (let b = 0; b <= totalBeats; b++) {
+          const x = beatToX(b);
+          if (x < -40 || x > cw + 40) continue;
+
+          const isBar = b % state.beatsPerBar === 0;
+          ctx.strokeStyle = isBar ? '#475569' : '#1e293b';
+          ctx.lineWidth = isBar ? 1.2 : 1;
+
+          ctx.beginPath();
+          ctx.moveTo(x, isBar ? 6 : ch * 0.55);
+          ctx.lineTo(x, ch);
+          ctx.stroke();
+
+          if (isBar) {
+            const barNum = Math.floor(b / state.beatsPerBar) + 1;
+            ctx.fillStyle = '#cbd5e1';
+            ctx.fillText(`${barNum}`, x + 5, ch * 0.45);
+          } else if (state.pxPerBeat >= 44) {
+            const beatInBar = (b % state.beatsPerBar) + 1;
+            ctx.fillStyle = '#64748b';
+            ctx.fillText(`.${beatInBar}`, x + 3, ch * 0.72);
+          }
+        }
+
+        // プレイヘッド（再生位置マーカー）
+        const playX = beatToX(state.currentBeat);
+        if (playX >= -12 && playX <= cw + 12) {
+          ctx.fillStyle = '#f59e0b';
+          ctx.beginPath();
+          ctx.moveTo(playX - 6, 2);
+          ctx.lineTo(playX + 6, 2);
+          ctx.lineTo(playX + 6, 11);
+          ctx.lineTo(playX, 18);
+          ctx.lineTo(playX - 6, 11);
+          ctx.closePath();
+          ctx.fill();
+
+          ctx.strokeStyle = '#f59e0b';
+          ctx.lineWidth = 1.5;
+          ctx.beginPath();
+          ctx.moveTo(playX, 18);
+          ctx.lineTo(playX, ch);
+          ctx.stroke();
+        }
+
+        ctx.restore();
+      }
+
+      function renderTrackLaneCanvas(track) {
+        const canvas = document.getElementById(`lane_canvas_${track.id}`);
+        if (!canvas) return;
+        const rect = canvas.getBoundingClientRect();
+        if (rect.width === 0 || rect.height === 0) return;
+
+        const dpr = window.devicePixelRatio || 1;
+        const w = Math.floor(rect.width * dpr);
+        const h = Math.floor(rect.height * dpr);
+        if (canvas.width !== w || canvas.height !== h) {
+          canvas.width = w;
+          canvas.height = h;
+        }
+
+        const ctx = canvas.getContext('2d');
+        ctx.save();
+        ctx.scale(dpr, dpr);
+        const cw = rect.width;
+        const ch = rect.height;
+
+        const isSelected = track.id === state.selectedTrackId;
+        const totalBeats = state.totalBars * state.beatsPerBar;
+
+        // 背景
+        ctx.fillStyle = isSelected ? '#0f1521' : '#0b0e15';
+        ctx.fillRect(0, 0, cw, ch);
+
+        // タイムライン範囲外（右側）の暗転表示
+        const endX = beatToX(totalBeats);
+        if (endX < cw) {
+          ctx.fillStyle = 'rgba(2, 4, 8, 0.65)';
+          ctx.fillRect(Math.max(0, endX), 0, cw - Math.max(0, endX), ch);
+        }
+
+        // 横軸ガイド線 (0, 64, 128, 192, 255)
+        [0, 64, 128, 192, 255].forEach((v) => {
+          const y = valueToY(v, ch);
+          ctx.strokeStyle = v === 128 ? 'rgba(148, 163, 184, 0.14)' : 'rgba(148, 163, 184, 0.06)';
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.moveTo(0, y);
+          ctx.lineTo(Math.min(cw, endX), y);
+          ctx.stroke();
+        });
+
+        // 縦グリッド線（小節・拍・スナップ）
+        const subStep = state.snapBeat > 0 && state.pxPerBeat * state.snapBeat >= 12 ? state.snapBeat : 1;
+        for (let b = 0; b <= totalBeats; b = Number((b + subStep).toFixed(4))) {
+          const x = beatToX(b);
+          if (x < -10 || x > cw + 10) continue;
+
+          const isBar = Math.abs(b % state.beatsPerBar) < 1e-4;
+          const isBeat = Math.abs(b % 1) < 1e-4;
+
+          ctx.strokeStyle = isBar
+            ? 'rgba(148, 163, 184, 0.22)'
+            : isBeat
+            ? 'rgba(148, 163, 184, 0.09)'
+            : 'rgba(148, 163, 184, 0.04)';
+          ctx.lineWidth = isBar ? 1.1 : 1;
+          ctx.beginPath();
+          ctx.moveTo(x, 0);
+          ctx.lineTo(x, ch);
+          ctx.stroke();
+        }
+
+        // オートメーションカーブの描画
+        const pts = track.points;
+        if (pts && pts.length > 0) {
+          const curvePath = new Path2D();
+          const startX = beatToX(0);
+          const firstPtX = beatToX(pts[0].beat);
+          const firstPtY = valueToY(pts[0].value, ch);
+
+          curvePath.moveTo(startX, firstPtY);
+          if (firstPtX > startX) {
+            curvePath.lineTo(firstPtX, firstPtY);
+          }
+
+          for (let i = 0; i < pts.length - 1; i++) {
+            const p0 = pts[i];
+            const p1 = pts[i + 1];
+            const x0 = beatToX(p0.beat);
+            const y0 = valueToY(p0.value, ch);
+            const x1 = beatToX(p1.beat);
+            const y1 = valueToY(p1.value, ch);
+
+            if (p0.curveType === 'bezier' && p0.cp1 && p0.cp2) {
+              const cx1 = beatToX(clamp(p0.cp1.beat, p0.beat, p1.beat));
+              const cy1 = valueToY(p0.cp1.value, ch);
+              const cx2 = beatToX(clamp(p0.cp2.beat, p0.beat, p1.beat));
+              const cy2 = valueToY(p0.cp2.value, ch);
+              curvePath.bezierCurveTo(cx1, cy1, cx2, cy2, x1, y1);
+            } else {
+              curvePath.lineTo(x1, y1);
+            }
+          }
+
+          const lastPt = pts[pts.length - 1];
+          const lastPtY = valueToY(lastPt.value, ch);
+          if (endX > beatToX(lastPt.beat)) {
+            curvePath.lineTo(endX, lastPtY);
+          }
+
+          // カーブ下部のグラデーション塗りつぶし
+          const fillPath = new Path2D(curvePath);
+          fillPath.lineTo(endX, ch);
+          fillPath.lineTo(startX, ch);
+          fillPath.closePath();
+
+          const areaGrad = ctx.createLinearGradient(0, 0, 0, ch);
+          areaGrad.addColorStop(0, hexToRgba(track.color, track.mute ? 0.08 : 0.28));
+          areaGrad.addColorStop(1, hexToRgba(track.color, 0.02));
+          ctx.fillStyle = areaGrad;
+          ctx.fill(fillPath);
+
+          // メインカーブライン
+          ctx.strokeStyle = track.mute ? '#475569' : track.color;
+          ctx.lineWidth = isSelected ? 2.4 : 1.8;
+          ctx.stroke(curvePath);
+
+          // ベジェ曲線の制御ハンドル (P1, P2) の描画
+          for (let i = 0; i < pts.length - 1; i++) {
+            const p0 = pts[i];
+            const p1 = pts[i + 1];
+            const isSegmentActive =
+              isSelected &&
+              p0.curveType === 'bezier' &&
+              (state.activeBezierSegmentStartId === p0.id ||
+                state.selectedPointId === p0.id ||
+                state.selectedPointId === p1.id ||
+                state.activeTool === 'bezier');
+
+            if (isSegmentActive && p0.cp1 && p0.cp2) {
+              const x0 = beatToX(p0.beat);
+              const y0 = valueToY(p0.value, ch);
+              const x1 = beatToX(p1.beat);
+              const y1 = valueToY(p1.value, ch);
+              const cx1 = beatToX(clamp(p0.cp1.beat, p0.beat, p1.beat));
+              const cy1 = valueToY(p0.cp1.value, ch);
+              const cx2 = beatToX(clamp(p0.cp2.beat, p0.beat, p1.beat));
+              const cy2 = valueToY(p0.cp2.value, ch);
+
+              // 接線アーム
+              ctx.save();
+              ctx.strokeStyle = 'rgba(226, 232, 240, 0.55)';
+              ctx.lineWidth = 1.2;
+              ctx.setLineDash([3, 3]);
+              ctx.beginPath();
+              ctx.moveTo(x0, y0);
+              ctx.lineTo(cx1, cy1);
+              ctx.moveTo(x1, y1);
+              ctx.lineTo(cx2, cy2);
+              ctx.stroke();
+              ctx.restore();
+
+              // ハンドル P1 (ダイヤ型)
+              drawBezierHandle(ctx, cx1, cy1, '#f59e0b', 'P1');
+              // ハンドル P2 (ダイヤ型)
+              drawBezierHandle(ctx, cx2, cy2, '#a855f7', 'P2');
+            }
+          }
+
+          // キーフレームノード（ポイント）描画
+          pts.forEach((pt) => {
+            const px = beatToX(pt.beat);
+            const py = valueToY(pt.value, ch);
+            if (px < -15 || px > cw + 15) return;
+
+            const isPtSelected = isSelected && state.selectedPointId === pt.id;
+            ctx.beginPath();
+            ctx.arc(px, py, isPtSelected ? 5.5 : isSelected ? 4 : 3, 0, Math.PI * 2);
+            ctx.fillStyle = isPtSelected ? '#ffffff' : '#0f172a';
+            ctx.fill();
+            ctx.lineWidth = isPtSelected ? 2.5 : 1.8;
+            ctx.strokeStyle = pt.curveType === 'bezier' ? '#f59e0b' : track.color;
+            ctx.stroke();
+          });
+        }
+
+        // ドラッグ描画中のリアルタイムプレビュー（直線・放物線・ベジェ・フリーハンド・消しゴム）
+        if (interaction.trackId === track.id && interaction.mode) {
+          drawInteractionPreview(ctx, track, ch);
+        }
+
+        // 現在のプレイヘッド交点ドット＆縦線
+        const playX = beatToX(state.currentBeat);
+        if (playX >= -5 && playX <= cw + 5) {
+          ctx.strokeStyle = 'rgba(245, 158, 11, 0.75)';
+          ctx.lineWidth = 1.2;
+          ctx.beginPath();
+          ctx.moveTo(playX, 0);
+          ctx.lineTo(playX, ch);
+          ctx.stroke();
+
+          const curVal = evaluateTrackAtBeat(track, state.currentBeat);
+          const curY = valueToY(curVal, ch);
+          ctx.beginPath();
+          ctx.arc(playX, curY, 4.5, 0, Math.PI * 2);
+          ctx.fillStyle = '#f59e0b';
+          ctx.fill();
+          ctx.strokeStyle = '#090d16';
+          ctx.lineWidth = 1.5;
+          ctx.stroke();
+        }
+
+        ctx.restore();
+      }
+
+      function drawBezierHandle(ctx, x, y, color, label) {
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.rotate(Math.PI / 4);
+        ctx.fillStyle = color;
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 1.5;
+        ctx.fillRect(-4.5, -4.5, 9, 9);
+        ctx.strokeRect(-4.5, -4.5, 9, 9);
+        ctx.restore();
+
+        ctx.font = 'bold 9px "JetBrains Mono", monospace';
+        ctx.fillStyle = '#f8fafc';
+        ctx.fillText(label, x + 7, y - 5);
+      }
+
+      function drawInteractionPreview(ctx, track, ch) {
+        const b0 = interaction.startBeat;
+        const v0 = interaction.startValue;
+        const b1 = interaction.currentBeat;
+        const v1 = interaction.currentValue;
+
+        ctx.save();
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 2;
+        ctx.setLineDash([4, 3]);
+
+        if (interaction.mode === 'draw_line') {
+          ctx.beginPath();
+          ctx.moveTo(beatToX(b0), valueToY(v0, ch));
+          ctx.lineTo(beatToX(b1), valueToY(v1, ch));
+          ctx.stroke();
+        } else if (interaction.mode === 'draw_parabola') {
+          const minB = Math.min(b0, b1);
+          const maxB = Math.max(b0, b1);
+          const startV = b0 <= b1 ? v0 : v1;
+          const endV = b0 <= b1 ? v1 : v0;
+          const steps = 40;
+          ctx.beginPath();
+          for (let i = 0; i <= steps; i++) {
+            const u = i / steps;
+            const b = minB + (maxB - minB) * u;
+            const eased = state.parabolaType === 'convex' ? 1 - Math.pow(1 - u, 2) : Math.pow(u, 2);
+            const v = startV + (endV - startV) * eased;
+            const px = beatToX(b);
+            const py = valueToY(v, ch);
+            if (i === 0) ctx.moveTo(px, py);
+            else ctx.lineTo(px, py);
+          }
+          ctx.stroke();
+        } else if (interaction.mode === 'draw_bezier') {
+          const minB = Math.min(b0, b1);
+          const maxB = Math.max(b0, b1);
+          const startV = b0 <= b1 ? v0 : v1;
+          const endV = b0 <= b1 ? v1 : v0;
+          const db = maxB - minB;
+          const x0 = beatToX(minB);
+          const y0 = valueToY(startV, ch);
+          const x1 = beatToX(maxB);
+          const y1 = valueToY(endV, ch);
+          const cx1 = beatToX(minB + db * 0.35);
+          const cy1 = y0;
+          const cx2 = beatToX(minB + db * 0.65);
+          const cy2 = y1;
+
+          ctx.beginPath();
+          ctx.moveTo(x0, y0);
+          ctx.bezierCurveTo(cx1, cy1, cx2, cy2, x1, y1);
+          ctx.stroke();
+        } else if (interaction.mode === 'draw_freehand' && interaction.freehandBuffer.length > 1) {
+          ctx.setLineDash([]);
+          ctx.strokeStyle = '#38bdf8';
+          ctx.beginPath();
+          interaction.freehandBuffer.forEach((pt, idx) => {
+            const px = beatToX(pt.beat);
+            const py = valueToY(pt.value, ch);
+            if (idx === 0) ctx.moveTo(px, py);
+            else ctx.lineTo(px, py);
+          });
+          ctx.stroke();
+        } else if (interaction.mode === 'erase') {
+          const xStart = beatToX(Math.min(b0, b1));
+          const xEnd = beatToX(Math.max(b0, b1));
+          ctx.setLineDash([]);
+          ctx.fillStyle = 'rgba(244, 63, 94, 0.22)';
+          ctx.fillRect(xStart, 0, Math.max(4, xEnd - xStart), ch);
+          ctx.strokeStyle = '#f43f5e';
+          ctx.strokeRect(xStart, 0, Math.max(4, xEnd - xStart), ch);
+        }
+
+        ctx.restore();
+      }
+
+      function hexToRgba(hex, alpha) {
+        const clean = hex.replace('#', '');
+        const num = parseInt(clean, 16);
+        const r = (num >> 16) & 255;
+        const g = (num >> 8) & 255;
+        const b = num & 255;
+        return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+      }
+
+      function renderAllCanvases() {
+        renderRulerCanvas();
+        state.tracks.forEach((track) => renderTrackLaneCanvas(track));
+      }
+
+      /* =========================================================================
+       * 10. レーンCanvas上のマウス/タッチ インタラクション（6ツール＋ベジェハンドル）
+       * ========================================================================= */
+      function attachLaneCanvasEvents(canvas, track) {
+        canvas.addEventListener('contextmenu', (e) => e.preventDefault());
+
+        canvas.addEventListener('pointerdown', (e) => {
+          canvas.setPointerCapture(e.pointerId);
+          const rect = canvas.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          const ch = rect.height;
+
+          // トラック選択更新
+          if (state.selectedTrackId !== track.id) {
+            state.selectedTrackId = track.id;
+            renderTrackList();
+          }
+
+          const rawBeat = xToBeat(x);
+          const snappedBeat = snapBeatValue(rawBeat);
+          const val = yToValue(y, ch);
+
+          // 右クリック：ポイント削除
+          if (e.button === 2) {
+            const hitPt = findNearestPoint(track, x, y, ch, 12);
+            if (hitPt) {
+              pushHistory();
+              track.points = track.points.filter((p) => p.id !== hitPt.id);
+              renderAllCanvases();
+              updateDmxValuesAndMonitors();
+            }
+            return;
+          }
+
+          // ツールごとの分岐
+          if (state.activeTool === 'select') {
+            // 1. まずベジェ制御ハンドル (P1, P2) へのヒット判定
+            const hitHandle = findNearestBezierHandle(track, x, y, ch, 12);
+            if (hitHandle) {
+              pushHistory();
+              interaction.mode = hitHandle.handleType === 'cp1' ? 'drag_cp1' : 'drag_cp2';
+              interaction.trackId = track.id;
+              interaction.pointId = hitHandle.point.id;
+              state.activeBezierSegmentStartId = hitHandle.point.id;
+              renderAllCanvases();
+              return;
+            }
+
+            // 2. キーフレームノードへのヒット判定
+            const hitPt = findNearestPoint(track, x, y, ch, 11);
+            if (hitPt) {
+              pushHistory();
+              interaction.mode = 'drag_point';
+              interaction.trackId = track.id;
+              interaction.pointId = hitPt.id;
+              state.selectedPointId = hitPt.id;
+              if (hitPt.curveType === 'bezier') {
+                state.activeBezierSegmentStartId = hitPt.id;
+              }
+              renderAllCanvases();
+              return;
+            }
+
+            // 3. カーブ線分上をクリックした場合はベジェハンドルを表示（ベジェ区間なら）
+            const segStart = findSegmentAtBeat(track, rawBeat);
+            if (segStart && segStart.curveType === 'bezier') {
+              state.activeBezierSegmentStartId = segStart.id;
+              state.selectedPointId = segStart.id;
+              renderAllCanvases();
+            } else {
+              state.selectedPointId = null;
+              renderAllCanvases();
+            }
+          } else if (state.activeTool === 'freehand') {
+            pushHistory();
+            interaction.mode = 'draw_freehand';
+            interaction.trackId = track.id;
+            interaction.startBeat = rawBeat;
+            interaction.currentBeat = rawBeat;
+            interaction.freehandBuffer = [{ beat: rawBeat, value: val }];
+          } else if (state.activeTool === 'line') {
+            pushHistory();
+            interaction.mode = 'draw_line';
+            interaction.trackId = track.id;
+            interaction.startBeat = snappedBeat;
+            interaction.startValue = val;
+            interaction.currentBeat = snappedBeat;
+            interaction.currentValue = val;
+          } else if (state.activeTool === 'parabola') {
+            pushHistory();
+            interaction.mode = 'draw_parabola';
+            interaction.trackId = track.id;
+            interaction.startBeat = snappedBeat;
+            interaction.startValue = val;
+            interaction.currentBeat = snappedBeat;
+            interaction.currentValue = val;
+          } else if (state.activeTool === 'bezier') {
+            pushHistory();
+            interaction.mode = 'draw_bezier';
+            interaction.trackId = track.id;
+            interaction.startBeat = snappedBeat;
+            interaction.startValue = val;
+            interaction.currentBeat = snappedBeat;
+            interaction.currentValue = val;
+          } else if (state.activeTool === 'eraser') {
+            pushHistory();
+            interaction.mode = 'erase';
+            interaction.trackId = track.id;
+            interaction.startBeat = rawBeat;
+            interaction.currentBeat = rawBeat;
+            erasePointsInRange(track, rawBeat - 0.15, rawBeat + 0.15);
+            renderTrackLaneCanvas(track);
+            updateDmxValuesAndMonitors();
+          }
+        });
+
+        // ダブルクリックで新規ポイント追加（選択ツール時）
+        canvas.addEventListener('dblclick', (e) => {
+          if (state.activeTool !== 'select') return;
+          const rect = canvas.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          const beat = snapBeatValue(xToBeat(x));
+          const value = yToValue(y, rect.height);
+
+          pushHistory();
+          const newPt = {
+            id: uid('pt'),
+            beat,
+            value,
+            curveType: 'linear',
+          };
+          track.points.push(newPt);
+          track.points.sort((a, b) => a.beat - b.beat);
+          state.selectedPointId = newPt.id;
+          renderTrackLaneCanvas(track);
+          updateDmxValuesAndMonitors();
+        });
+
+        canvas.addEventListener('pointermove', (e) => {
+          const rect = canvas.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          const ch = rect.height;
+
+          // ホバー時のカーソル変化（選択ツール時）
+          if (!interaction.mode && state.activeTool === 'select') {
+            const hitH = findNearestBezierHandle(track, x, y, ch, 11);
+            const hitP = findNearestPoint(track, x, y, ch, 10);
+            canvas.style.cursor = hitH || hitP ? 'grab' : 'default';
+          } else if (!interaction.mode) {
+            canvas.style.cursor = 'crosshair';
+          }
+
+          if (interaction.trackId !== track.id || !interaction.mode) return;
+
+          const rawBeat = xToBeat(x);
+          const snappedBeat = snapBeatValue(rawBeat);
+          const val = yToValue(y, ch);
+
+          if (interaction.mode === 'drag_point') {
+            canvas.style.cursor = 'grabbing';
+            const idx = track.points.findIndex((p) => p.id === interaction.pointId);
+            if (idx !== -1) {
+              const pt = track.points[idx];
+              const oldBeat = pt.beat;
+              const oldValue = pt.value;
+              const minB = idx > 0 ? track.points[idx - 1].beat + 0.01 : 0;
+              const maxB = idx < track.points.length - 1 ? track.points[idx + 1].beat - 0.01 : state.totalBars * state.beatsPerBar;
+              const nextBeat = clamp(snappedBeat, minB, maxB);
+
+              const dBeat = nextBeat - oldBeat;
+              const dVal = val - oldValue;
+              pt.beat = nextBeat;
+              pt.value = val;
+
+              // 自身のベジェ制御点も相対追従
+              if (pt.curveType === 'bezier' && pt.cp1) {
+                pt.cp1.beat = clamp(pt.cp1.beat + dBeat, pt.beat, track.points[idx + 1]?.beat ?? pt.beat);
+                pt.cp1.value = clamp(pt.cp1.value + dVal, 0, 255);
+              }
+              // 直前ポイントのcp2も相対追従
+              if (idx > 0 && track.points[idx - 1].curveType === 'bezier' && track.points[idx - 1].cp2) {
+                const prev = track.points[idx - 1];
+                prev.cp2.beat = clamp(prev.cp2.beat + dBeat, prev.beat, pt.beat);
+                prev.cp2.value = clamp(prev.cp2.value + dVal, 0, 255);
+              }
+
+              renderTrackLaneCanvas(track);
+              updateDmxValuesAndMonitors();
+            }
+          } else if (interaction.mode === 'drag_cp1' || interaction.mode === 'drag_cp2') {
+            canvas.style.cursor = 'grabbing';
+            const idx = track.points.findIndex((p) => p.id === interaction.pointId);
+            if (idx !== -1 && idx < track.points.length - 1) {
+              const p0 = track.points[idx];
+              const p1 = track.points[idx + 1];
+              const clampedBeat = clamp(rawBeat, p0.beat, p1.beat);
+              if (interaction.mode === 'drag_cp1') {
+                p0.cp1 = { beat: clampedBeat, value: val };
+              } else {
+                p0.cp2 = { beat: clampedBeat, value: val };
+              }
+              renderTrackLaneCanvas(track);
+              updateDmxValuesAndMonitors();
+            }
+          } else if (interaction.mode === 'draw_freehand') {
+            interaction.currentBeat = rawBeat;
+            interaction.freehandBuffer.push({ beat: rawBeat, value: val });
+            renderTrackLaneCanvas(track);
+          } else if (
+            interaction.mode === 'draw_line' ||
+            interaction.mode === 'draw_parabola' ||
+            interaction.mode === 'draw_bezier'
+          ) {
+            interaction.currentBeat = snappedBeat;
+            interaction.currentValue = val;
+            renderTrackLaneCanvas(track);
+          } else if (interaction.mode === 'erase') {
+            const prevB = interaction.currentBeat;
+            interaction.currentBeat = rawBeat;
+            erasePointsInRange(track, Math.min(prevB, rawBeat) - 0.1, Math.max(prevB, rawBeat) + 0.1);
+            renderTrackLaneCanvas(track);
+            updateDmxValuesAndMonitors();
+          }
+        });
+
+        canvas.addEventListener('pointerup', (e) => {
+          if (interaction.trackId !== track.id || !interaction.mode) return;
+
+          if (interaction.mode === 'draw_freehand') {
+            const buf = interaction.freehandBuffer;
+            if (buf.length >= 2) {
+              const minB = Math.min(...buf.map((p) => p.beat));
+              const maxB = Math.max(...buf.map((p) => p.beat));
+              let finalPts;
+              if (state.autoSmooth) {
+                finalPts = smoothAutomationPoints(buf, state.smoothStrength);
+              } else {
+                // スムージングOFF時は適度な間隔でポイント化
+                const sorted = [...buf].sort((a, b) => a.beat - b.beat);
+                finalPts = sorted.map((p) => ({
+                  id: uid('pt'),
+                  beat: Number(p.beat.toFixed(4)),
+                  value: Math.round(clamp(p.value, 0, 255)),
+                  curveType: 'linear',
+                }));
+              }
+              replaceRangeInTrack(track, minB, maxB, finalPts);
+            }
+          } else if (interaction.mode === 'draw_line') {
+            const b0 = interaction.startBeat;
+            const v0 = interaction.startValue;
+            const b1 = interaction.currentBeat;
+            const v1 = interaction.currentValue;
+            if (Math.abs(b1 - b0) > 0.01) {
+              const startPt = { id: uid('pt'), beat: b0 <= b1 ? b0 : b1, value: b0 <= b1 ? v0 : v1, curveType: 'linear' };
+              const endPt = { id: uid('pt'), beat: b0 <= b1 ? b1 : b0, value: b0 <= b1 ? v1 : v0, curveType: 'linear' };
+              replaceRangeInTrack(track, startPt.beat, endPt.beat, [startPt, endPt]);
+            }
+          } else if (interaction.mode === 'draw_parabola') {
+            const b0 = interaction.startBeat;
+            const v0 = interaction.startValue;
+            const b1 = interaction.currentBeat;
+            const v1 = interaction.currentValue;
+            if (Math.abs(b1 - b0) > 0.01) {
+              const minB = Math.min(b0, b1);
+              const maxB = Math.max(b0, b1);
+              const startV = b0 <= b1 ? v0 : v1;
+              const endV = b0 <= b1 ? v1 : v0;
+
+              // 二次放物線の厳密な3次ベジェ次数昇格表現 (Q = (midB, endV or startV))
+              const midB = (minB + maxB) * 0.5;
+              const qVal = state.parabolaType === 'convex' ? endV : startV;
+              const cp1Beat = minB + (2 / 3) * (midB - minB);
+              const cp1Val = startV + (2 / 3) * (qVal - startV);
+              const cp2Beat = maxB + (2 / 3) * (midB - maxB);
+              const cp2Val = endV + (2 / 3) * (qVal - endV);
+
+              const startPt = {
+                id: uid('pt'),
+                beat: minB,
+                value: startV,
+                curveType: 'bezier',
+                cp1: { beat: cp1Beat, value: clamp(cp1Val, 0, 255) },
+                cp2: { beat: cp2Beat, value: clamp(cp2Val, 0, 255) },
+              };
+              const endPt = {
+                id: uid('pt'),
+                beat: maxB,
+                value: endV,
+                curveType: 'linear',
+              };
+              replaceRangeInTrack(track, minB, maxB, [startPt, endPt]);
+              state.activeBezierSegmentStartId = startPt.id;
+            }
+          } else if (interaction.mode === 'draw_bezier') {
+            const b0 = interaction.startBeat;
+            const v0 = interaction.startValue;
+            const b1 = interaction.currentBeat;
+            const v1 = interaction.currentValue;
+            if (Math.abs(b1 - b0) > 0.01) {
+              const minB = Math.min(b0, b1);
+              const maxB = Math.max(b0, b1);
+              const startV = b0 <= b1 ? v0 : v1;
+              const endV = b0 <= b1 ? v1 : v0;
+              const db = maxB - minB;
+
+              const startPt = {
+                id: uid('pt'),
+                beat: minB,
+                value: startV,
+                curveType: 'bezier',
+                cp1: { beat: minB + db * 0.35, value: startV },
+                cp2: { beat: minB + db * 0.65, value: endV },
+              };
+              const endPt = {
+                id: uid('pt'),
+                beat: maxB,
+                value: endV,
+                curveType: 'linear',
+              };
+              replaceRangeInTrack(track, minB, maxB, [startPt, endPt]);
+              state.activeBezierSegmentStartId = startPt.id;
+              state.selectedPointId = startPt.id;
+            }
+          }
+
+          interaction.mode = null;
+          interaction.trackId = null;
+          interaction.freehandBuffer = [];
+          renderTrackLaneCanvas(track);
+          updateDmxValuesAndMonitors();
+        });
+      }
+
+      function findNearestPoint(track, x, y, ch, radiusPx) {
+        let best = null;
+        let bestDist = radiusPx;
+        for (const pt of track.points) {
+          const px = beatToX(pt.beat);
+          const py = valueToY(pt.value, ch);
+          const d = Math.hypot(px - x, py - y);
+          if (d <= bestDist) {
+            bestDist = d;
+            best = pt;
+          }
+        }
+        return best;
+      }
+
+      function findNearestBezierHandle(track, x, y, ch, radiusPx) {
+        for (let i = 0; i < track.points.length - 1; i++) {
+          const p0 = track.points[i];
+          const p1 = track.points[i + 1];
+          if (p0.curveType !== 'bezier' || !p0.cp1 || !p0.cp2) continue;
+
+          const cx1 = beatToX(clamp(p0.cp1.beat, p0.beat, p1.beat));
+          const cy1 = valueToY(p0.cp1.value, ch);
+          if (Math.hypot(cx1 - x, cy1 - y) <= radiusPx) {
+            return { point: p0, handleType: 'cp1' };
+          }
+
+          const cx2 = beatToX(clamp(p0.cp2.beat, p0.beat, p1.beat));
+          const cy2 = valueToY(p0.cp2.value, ch);
+          if (Math.hypot(cx2 - x, cy2 - y) <= radiusPx) {
+            return { point: p0, handleType: 'cp2' };
+          }
+        }
+        return null;
+      }
+
+      function findSegmentAtBeat(track, beat) {
+        for (let i = 0; i < track.points.length - 1; i++) {
+          if (track.points[i].beat <= beat && beat <= track.points[i + 1].beat) {
+            return track.points[i];
+          }
+        }
+        return null;
+      }
+
+      function erasePointsInRange(track, minB, maxB) {
+        track.points = track.points.filter((pt) => pt.beat < minB || pt.beat > maxB);
+      }
+
+      /* =========================================================================
+       * 11. ルーラー・シーク＆タイムラインスクロール操作
+       * ========================================================================= */
+      function initRulerInteractions() {
+        const wrapper = document.getElementById('rulerScrollWrapper');
+        let scrubbing = false;
+
+        function seekFromEvent(e) {
+          const rect = wrapper.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const beat = snapBeatValue(xToBeat(x));
+          state.currentBeat = clamp(beat, 0, state.totalBars * state.beatsPerBar);
+          updateTimecodeUI();
+          renderAllCanvases();
+          updateDmxValuesAndMonitors();
+        }
+
+        wrapper.addEventListener('pointerdown', (e) => {
+          wrapper.setPointerCapture(e.pointerId);
+          scrubbing = true;
+          seekFromEvent(e);
+        });
+
+        wrapper.addEventListener('pointermove', (e) => {
+          if (!scrubbing) return;
+          seekFromEvent(e);
+        });
+
+        wrapper.addEventListener('pointerup', () => {
+          scrubbing = false;
+        });
+
+        // Shift+ホイールまたは横トラックパッドスワイプでタイムライン横スクロール
+        const workspace = document.getElementById('workspaceScrollContainer');
+        workspace.addEventListener(
+          'wheel',
+          (e) => {
+            if (Math.abs(e.deltaX) > Math.abs(e.deltaY) || e.shiftKey) {
+              e.preventDefault();
+              const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+              const maxScroll = Math.max(0, state.totalBars * state.beatsPerBar * state.pxPerBeat - 200);
+              state.scrollLeft = clamp(state.scrollLeft + delta, 0, maxScroll);
+              renderAllCanvases();
+            }
+          },
+          { passive: false }
+        );
+      }
+
+      /* =========================================================================
+       * 12. トランスポート＆メインアニメーションループ
+       * ========================================================================= */
+      let lastFrameTime = performance.now();
+
+      function updateTimecodeUI() {
+        const bar = Math.floor(state.currentBeat / state.beatsPerBar) + 1;
+        const beatInBar = Math.floor(state.currentBeat % state.beatsPerBar) + 1;
+        const tick = Math.floor((state.currentBeat % 1) * 100);
+
+        document.getElementById('displayBarBeat').textContent = `${String(bar).padStart(3, '0')}.${beatInBar}.${String(tick).padStart(2, '0')}`;
+
+        const seconds = (state.currentBeat / state.bpm) * 60;
+        const mins = Math.floor(seconds / 60);
+        const secs = seconds % 60;
+        document.getElementById('displayTimeSec').textContent = `${String(mins).padStart(2, '0')}:${secs.toFixed(2).padStart(5, '0')}`;
+      }
+
+      function togglePlayPause() {
+        state.isPlaying = !state.isPlaying;
+        lastFrameTime = performance.now();
+        updatePlayButtonUI();
+      }
+
+      function stopPlayback() {
+        state.isPlaying = false;
+        state.currentBeat = 0;
+        state.scrollLeft = 0;
+        updatePlayButtonUI();
+        updateTimecodeUI();
+        renderAllCanvases();
+        updateDmxValuesAndMonitors();
+      }
+
+      function updatePlayButtonUI() {
+        const iconPlay = document.getElementById('iconPlay');
+        const iconPause = document.getElementById('iconPause');
+        const btn = document.getElementById('btnPlayPause');
+        if (state.isPlaying) {
+          iconPlay.classList.add('hidden');
+          iconPause.classList.remove('hidden');
+          btn.classList.replace('bg-emerald-600', 'bg-amber-600');
+          btn.classList.replace('hover:bg-emerald-500', 'hover:bg-amber-500');
+        } else {
+          iconPlay.classList.remove('hidden');
+          iconPause.classList.add('hidden');
+          btn.classList.replace('bg-amber-600', 'bg-emerald-600');
+          btn.classList.replace('hover:bg-amber-500', 'hover:bg-emerald-500');
+        }
+      }
+
+      function mainLoop(now) {
+        const dt = (now - lastFrameTime) / 1000;
+        lastFrameTime = now;
+
+        if (state.isPlaying) {
+          const beatsPerSecond = state.bpm / 60;
+          state.currentBeat += beatsPerSecond * dt;
+          const totalBeats = state.totalBars * state.beatsPerBar;
+
+          if (state.currentBeat >= totalBeats) {
+            if (state.isLooping) {
+              state.currentBeat %= totalBeats;
+            } else {
+              state.currentBeat = totalBeats;
+              state.isPlaying = false;
+              updatePlayButtonUI();
+            }
+          }
+
+          // プレイヘッドが画面右端を超えたら自動追従スクロール
+          const wrapper = document.getElementById('rulerScrollWrapper');
+          if (wrapper) {
+            const viewW = wrapper.clientWidth;
+            const playX = beatToX(state.currentBeat);
+            if (playX > viewW - 40) {
+              state.scrollLeft = Math.max(0, state.currentBeat * state.pxPerBeat - 80);
+            } else if (playX < 0) {
+              state.scrollLeft = Math.max(0, state.currentBeat * state.pxPerBeat - 40);
+            }
+          }
+
+          updateTimecodeUI();
+          renderAllCanvases();
+          updateDmxValuesAndMonitors();
+        }
+
+        requestAnimationFrame(mainLoop);
+      }
+
+      /* =========================================================================
+       * 13. UIコントロール・イベントバインディング
+       * ========================================================================= */
+      function bindUIEvents() {
+        // 再生・停止・ループ
+        document.getElementById('btnPlayPause').addEventListener('click', togglePlayPause);
+        document.getElementById('btnStop').addEventListener('click', stopPlayback);
+
+        document.getElementById('btnLoop').addEventListener('click', (e) => {
+          state.isLooping = !state.isLooping;
+          const btn = e.currentTarget;
+          if (state.isLooping) {
+            btn.className = 'p-1.5 rounded-lg bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 hover:bg-cyan-500/30 transition';
+          } else {
+            btn.className = 'p-1.5 rounded-lg bg-daw-surface text-slate-400 border border-daw-border hover:text-white transition';
+          }
+          renderRulerCanvas();
+        });
+
+        // BPM
+        document.getElementById('inputBpm').addEventListener('change', (e) => {
+          state.bpm = clamp(parseInt(e.target.value, 10) || 120, 40, 300);
+          e.target.value = state.bpm;
+          updateTimecodeUI();
+        });
+
+        // グランドマスター
+        document.getElementById('grandMasterSlider').addEventListener('input', (e) => {
+          const pct = parseInt(e.target.value, 10);
+          state.grandMaster = pct / 100;
+          document.getElementById('grandMasterValue').textContent = `${pct}%`;
+          updateDmxValuesAndMonitors();
+        });
+
+        // ツールボタン切替
+        document.querySelectorAll('.tool-btn').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            setActiveTool(btn.dataset.tool);
+          });
+        });
+
+        // 放物線タイプ選択
+        document.getElementById('parabolaTypeSelect').addEventListener('change', (e) => {
+          state.parabolaType = e.target.value;
+        });
+
+        // スムージング設定
+        document.getElementById('toggleAutoSmooth').addEventListener('change', (e) => {
+          state.autoSmooth = e.target.checked;
+          showToast(`自動スムージングを ${state.autoSmooth ? 'ON' : 'OFF'} にしました`, 'info');
+        });
+
+        document.getElementById('smoothStrengthSlider').addEventListener('input', (e) => {
+          state.smoothStrength = parseInt(e.target.value, 10);
+          document.getElementById('smoothStrengthValue').textContent = state.smoothStrength;
+        });
+
+        // 選択トラックをワンクリックでスムーズ化
+        document.getElementById('btnSmoothSelectedTrack').addEventListener('click', () => {
+          const track = state.tracks.find((t) => t.id === state.selectedTrackId);
+          if (!track || track.points.length < 3) {
+            showToast('スムーズ化する十分なポイントがありません', 'warning');
+            return;
+          }
+          pushHistory();
+          track.points = smoothAutomationPoints(track.points, state.smoothStrength);
+          renderTrackLaneCanvas(track);
+          updateDmxValuesAndMonitors();
+          showToast(`「${track.name}」のカーブを滑らかに補正しました（強度: ${state.smoothStrength}）`, 'success');
+        });
+
+        // スナップ・小節数・ズーム
+        document.getElementById('snapSelect').addEventListener('change', (e) => {
+          state.snapBeat = parseFloat(e.target.value);
+          renderAllCanvases();
+        });
+
+        document.getElementById('barsSelect').addEventListener('change', (e) => {
+          state.totalBars = parseInt(e.target.value, 10);
+          renderAllCanvases();
+        });
+
+        document.getElementById('zoomSlider').addEventListener('input', (e) => {
+          state.pxPerBeat = parseInt(e.target.value, 10);
+          renderAllCanvases();
+        });
+
+        // USB接続 / 切断
+        document.getElementById('btnConnectUsb').addEventListener('click', () => {
+          if (state.serial.isConnected) {
+            disconnectDmxUsb(false);
+          } else {
+            connectDmxUsb();
+          }
+        });
+
+        document.getElementById('dmxProtocolSelect').addEventListener('change', (e) => {
+          state.serial.protocol = e.target.value;
+          if (state.serial.isConnected) {
+            disconnectDmxUsb(false);
+          }
+        });
+
+        // プリセット読込
+        document.getElementById('presetSelect').addEventListener('change', (e) => {
+          if (!e.target.value) return;
+          loadPreset(e.target.value);
+          updateDmxValuesAndMonitors();
+          showToast('プリセットオートメーションを読み込みました', 'success');
+          e.target.value = '';
+        });
+
+        // アンドゥ
+        document.getElementById('btnUndo').addEventListener('click', undo);
+
+        // JSON エクスポート
+        document.getElementById('btnExportJson').addEventListener('click', () => {
+          const payload = {
+            app: 'LumiDAW DMX',
+            version: '1.0',
+            bpm: state.bpm,
+            totalBars: state.totalBars,
+            tracks: state.tracks,
+          };
+          const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `lumidaw_project_${new Date().toISOString().slice(0, 10)}.json`;
+          a.click();
+          URL.revokeObjectURL(url);
+          showToast('プロジェクトをJSONファイルとして保存しました', 'success');
+        });
+
+        // JSON インポート
+        document.getElementById('inputImportJson').addEventListener('change', (e) => {
+          const file = e.target.files?.[0];
+          if (!file) return;
+          const reader = new FileReader();
+          reader.onload = (ev) => {
+            try {
+              const data = JSON.parse(ev.target.result);
+              if (!Array.isArray(data.tracks)) throw new Error('Invalid project file');
+              pushHistory();
+              state.bpm = data.bpm || 120;
+              state.totalBars = data.totalBars || 8;
+              state.tracks = data.tracks;
+              state.selectedTrackId = state.tracks[0]?.id || null;
+              document.getElementById('inputBpm').value = state.bpm;
+              document.getElementById('barsSelect').value = String(state.totalBars);
+              renderTrackList();
+              renderAllCanvases();
+              updateDmxValuesAndMonitors();
+              showToast('プロジェクトファイルを読み込みました', 'success');
+            } catch (err) {
+              showToast('JSONファイルの読み込みに失敗しました', 'error');
+            }
+          };
+          reader.readAsText(file);
+          e.target.value = '';
+        });
+
+        // チャンネル追加モーダル
+        const modal = document.getElementById('addChannelModal');
+        const paletteDiv = document.getElementById('colorPalette');
+        COLOR_PALETTE.forEach((hex) => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'w-6 h-6 rounded-full border-2 border-transparent hover:scale-110 transition';
+          btn.style.backgroundColor = hex;
+          btn.addEventListener('click', () => {
+            state.newTrackColor = hex;
+            paletteDiv.querySelectorAll('button').forEach((b) => (b.style.borderColor = 'transparent'));
+            btn.style.borderColor = '#ffffff';
+          });
+          paletteDiv.appendChild(btn);
+        });
+
+        document.getElementById('btnOpenAddModal').addEventListener('click', () => {
+          const usedCh = new Set(state.tracks.map((t) => t.channel));
+          let nextCh = 1;
+          while (usedCh.has(nextCh) && nextCh < 512) nextCh++;
+          document.getElementById('newTrackCh').value = nextCh;
+          document.getElementById('newTrackName').value = `DMX CH ${nextCh}`;
+          modal.classList.remove('hidden');
+          modal.classList.add('flex');
+        });
+
+        const closeModal = () => {
+          modal.classList.add('hidden');
+          modal.classList.remove('flex');
+        };
+        document.getElementById('btnCloseAddModal').addEventListener('click', closeModal);
+        document.getElementById('btnCancelAddModal').addEventListener('click', closeModal);
+
+        document.getElementById('btnConfirmAddTrack').addEventListener('click', () => {
+          const ch = document.getElementById('newTrackCh').value;
+          const name = document.getElementById('newTrackName').value;
+          addTrack(ch, name, state.newTrackColor);
+          closeModal();
+          showToast(`CH ${ch} (${name}) を追加しました`, 'success');
+        });
+
+        // RGB一括追加
+        document.getElementById('btnAddRgbFixture').addEventListener('click', () => {
+          const usedCh = new Set(state.tracks.map((t) => t.channel));
+          let baseCh = 1;
+          while ((usedCh.has(baseCh) || usedCh.has(baseCh + 1) || usedCh.has(baseCh + 2)) && baseCh <= 509) {
+            baseCh++;
+          }
+          addTrack(baseCh, `フィクスチャ Red`, '#f43f5e');
+          addTrack(baseCh + 1, `フィクスチャ Green`, '#10b981');
+          addTrack(baseCh + 2, `フィクスチャ Blue`, '#3b82f6');
+          showToast(`CH ${baseCh}〜${baseCh + 2} にRGBフィクスチャを一括追加しました`, 'success');
+        });
+
+        // 下部パネル折りたたみ
+        let bottomMinimized = false;
+        document.getElementById('btnToggleBottomPanel').addEventListener('click', () => {
+          const panel = document.getElementById('bottomPanel');
+          const body = document.getElementById('bottomPanelBody');
+          bottomMinimized = !bottomMinimized;
+          if (bottomMinimized) {
+            panel.style.height = '28px';
+            body.classList.add('hidden');
+          } else {
+            panel.style.height = '210px';
+            body.classList.remove('hidden');
+            setTimeout(() => {
+              renderVirtualStage();
+              renderAllCanvases();
+            }, 220);
+          }
+        });
+
+        // キーボードショートカット (Space: 再生/一時停止, 1-6: ツール, Delete/Backspace: 選択ポイント削除, Ctrl+Z: Undo)
+        window.addEventListener('keydown', (e) => {
+          if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT' || e.target.tagName === 'TEXTAREA') {
+            return;
+          }
+
+          if (e.code === 'Space') {
+            e.preventDefault();
+            togglePlayPause();
+          } else if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') {
+            e.preventDefault();
+            undo();
+          } else if (e.key === 'Delete' || e.key === 'Backspace') {
+            if (state.selectedTrackId && state.selectedPointId) {
+              const track = state.tracks.find((t) => t.id === state.selectedTrackId);
+              if (track) {
+                pushHistory();
+                track.points = track.points.filter((p) => p.id !== state.selectedPointId);
+                state.selectedPointId = null;
+                renderTrackLaneCanvas(track);
+                updateDmxValuesAndMonitors();
+              }
+            }
+          } else if (e.key === '1') {
+            setActiveTool('select');
+          } else if (e.key === '2') {
+            setActiveTool('freehand');
+          } else if (e.key === '3') {
+            setActiveTool('line');
+          } else if (e.key === '4') {
+            setActiveTool('parabola');
+          } else if (e.key === '5') {
+            setActiveTool('bezier');
+          } else if (e.key === '6') {
+            setActiveTool('eraser');
+          }
+        });
+
+        // ウィンドウリサイズ時のCanvas再描画
+        window.addEventListener('resize', () => {
+          renderAllCanvases();
+          renderVirtualStage();
+        });
+      }
+
+      function setActiveTool(toolName) {
+        state.activeTool = toolName;
+        document.querySelectorAll('.tool-btn').forEach((btn) => {
+          if (btn.dataset.tool === toolName) {
+            btn.className = 'tool-btn active px-2 py-1 rounded-md text-xs font-medium flex items-center gap-1 bg-cyan-600 text-white transition';
+          } else {
+            btn.className = 'tool-btn px-2 py-1 rounded-md text-xs font-medium flex items-center gap-1 text-slate-300 hover:bg-daw-elevated transition';
+          }
+        });
+
+        const parabolaOpts = document.getElementById('parabolaOptions');
+        const bezierOpts = document.getElementById('bezierOptions');
+        parabolaOpts.classList.toggle('hidden', toolName !== 'parabola');
+        parabolaOpts.classList.toggle('flex', toolName === 'parabola');
+        bezierOpts.classList.toggle('hidden', toolName !== 'bezier');
+        bezierOpts.classList.toggle('flex', toolName === 'bezier');
+
+        renderAllCanvases();
+      }
+
+      /* =========================================================================
+       * 14. アプリケーション初期化
+       * ========================================================================= */
+      window.addEventListener('load', () => {
+        initDmxGridMonitor();
+        initRulerInteractions();
+        bindUIEvents();
+
+        // 初期サンプルプロジェクト読込
+        loadPreset('club_wave');
+        state.history = []; // 初期状態はアンドゥ対象外にする
+        document.getElementById('btnUndo').disabled = true;
+
+        updateTimecodeUI();
+        updateDmxValuesAndMonitors();
+        renderAllCanvases();
+
+        // DMX出力タイマー (約35Hz = 28ms周期)
+        setInterval(sendDmxFrameLoop, 28);
+
+        // アニメーションループ開始
+        requestAnimationFrame(mainLoop);
+      });
+    })();
+  </script>
+</body>
+</html>
