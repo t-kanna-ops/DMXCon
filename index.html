@@ -30,12 +30,7 @@
       --ruler-h: 32px;
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      user-select: none;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
 
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Hiragino Sans', 'Noto Sans JP', sans-serif;
@@ -48,11 +43,7 @@
       font-size: 12px;
     }
 
-    input, select, button {
-      font-family: inherit;
-      font-size: 12px;
-      color: var(--text-main);
-    }
+    input, select, button { font-family: inherit; font-size: 12px; color: var(--text-main); }
 
     input[type="number"], input[type="text"], select {
       background: var(--bg-input);
@@ -63,9 +54,7 @@
       user-select: text;
     }
 
-    input[type="number"]:focus, input[type="text"]:focus, select:focus {
-      border-color: var(--accent-cyan);
-    }
+    input[type="number"]:focus, input[type="text"]:focus, select:focus { border-color: var(--accent-cyan); }
 
     button {
       background: #202736;
@@ -80,14 +69,8 @@
       white-space: nowrap;
     }
 
-    button:hover {
-      background: #2a3347;
-      border-color: #485675;
-    }
-
-    button:active {
-      transform: translateY(1px);
-    }
+    button:hover { background: #2a3347; border-color: #485675; }
+    button:active { transform: translateY(1px); }
 
     button.primary {
       background: rgba(0, 229, 255, 0.15);
@@ -95,9 +78,18 @@
       color: var(--accent-cyan);
       font-weight: 600;
     }
+    button.primary:hover { background: rgba(0, 229, 255, 0.26); }
 
-    button.primary:hover {
-      background: rgba(0, 229, 255, 0.25);
+    button.tutorial-launch {
+      background: linear-gradient(135deg, rgba(0, 229, 255, 0.2), rgba(179, 136, 255, 0.22));
+      border-color: #7c4dff;
+      color: #e0d4ff;
+      font-weight: 600;
+    }
+    button.tutorial-launch:hover {
+      background: linear-gradient(135deg, rgba(0, 229, 255, 0.32), rgba(179, 136, 255, 0.34));
+      border-color: var(--accent-cyan);
+      color: #fff;
     }
 
     button.danger {
@@ -105,11 +97,7 @@
       border-color: rgba(255, 61, 87, 0.6);
       color: #ff6b7e;
     }
-
-    button.danger:hover {
-      background: rgba(255, 61, 87, 0.26);
-      border-color: var(--accent-red);
-    }
+    button.danger:hover { background: rgba(255, 61, 87, 0.26); border-color: var(--accent-red); }
 
     button.active-green {
       background: rgba(0, 230, 118, 0.18);
@@ -171,18 +159,8 @@
       letter-spacing: 0.5px;
     }
 
-    .param-box {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      color: var(--text-dim);
-      font-size: 11px;
-    }
-
-    .param-box input[type="number"] {
-      width: 58px;
-      text-align: right;
-    }
+    .param-box { display: flex; align-items: center; gap: 5px; color: var(--text-dim); font-size: 11px; }
+    .param-box input[type="number"] { width: 58px; text-align: right; }
 
     .dmx-status {
       display: flex;
@@ -195,17 +173,8 @@
       font-size: 11px;
     }
 
-    .status-led {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: #555e70;
-    }
-
-    .status-led.connected {
-      background: var(--accent-green);
-      box-shadow: 0 0 8px var(--accent-green);
-    }
+    .status-led { width: 8px; height: 8px; border-radius: 50%; background: #555e70; }
+    .status-led.connected { background: var(--accent-green); box-shadow: 0 0 8px var(--accent-green); }
 
     /* Tool Ribbon */
     .toolribbon {
@@ -229,26 +198,19 @@
       color: var(--text-dim);
       font-size: 11.5px;
     }
-
-    .tool-btn:hover {
-      color: var(--text-main);
-      background: #232b3d;
-    }
-
+    .tool-btn:hover { color: var(--text-main); background: #232b3d; }
     .tool-btn.assigned-left {
       border-color: var(--accent-cyan);
       background: var(--accent-cyan-bg);
       color: #fff;
       box-shadow: inset 0 0 0 1px rgba(0, 229, 255, 0.35);
     }
-
     .tool-btn.assigned-right {
       border-color: var(--accent-orange);
       background: var(--accent-orange-bg);
       color: #fff;
       box-shadow: inset 0 0 0 1px rgba(255, 145, 0, 0.35);
     }
-
     .tool-btn.assigned-both {
       border-top-color: var(--accent-cyan);
       border-left-color: var(--accent-cyan);
@@ -258,38 +220,13 @@
       color: #fff;
     }
 
-    .btn-badge {
-      font-size: 9.5px;
-      font-weight: 700;
-      padding: 1px 4px;
-      border-radius: 3px;
-      margin-left: 2px;
-    }
-
-    .badge-l {
-      background: var(--accent-cyan);
-      color: #051318;
-    }
-
-    .badge-r {
-      background: var(--accent-orange);
-      color: #1f1000;
-    }
-
-    .ribbon-sep {
-      width: 1px;
-      height: 22px;
-      background: var(--border);
-      margin: 0 2px;
-    }
+    .btn-badge { font-size: 9.5px; font-weight: 700; padding: 1px 4px; border-radius: 3px; margin-left: 2px; }
+    .badge-l { background: var(--accent-cyan); color: #051318; }
+    .badge-r { background: var(--accent-orange); color: #1f1000; }
+    .ribbon-sep { width: 1px; height: 22px; background: var(--border); margin: 0 2px; }
 
     /* Main Split Workspace */
-    .workspace {
-      flex: 1;
-      display: flex;
-      min-height: 0;
-      overflow: hidden;
-    }
+    .workspace { flex: 1; display: flex; min-height: 0; overflow: hidden; }
 
     /* Left 3D Stage Pane */
     .stage-pane {
@@ -315,19 +252,9 @@
       z-index: 5;
     }
 
-    .stage-canvas-wrap {
-      flex: 1;
-      position: relative;
-      overflow: hidden;
-    }
+    .stage-canvas-wrap { flex: 1; position: relative; overflow: hidden; }
+    #stageCanvas { width: 100%; height: 100%; display: block; }
 
-    #stageCanvas {
-      width: 100%;
-      height: 100%;
-      display: block;
-    }
-
-    /* Stage Size Popover */
     .stage-size-popover {
       position: absolute;
       top: 40px;
@@ -343,10 +270,7 @@
       flex-direction: column;
       gap: 9px;
     }
-
-    .stage-size-popover.open {
-      display: flex;
-    }
+    .stage-size-popover.open { display: flex; }
 
     .popover-title {
       font-weight: 700;
@@ -383,15 +307,8 @@
       font-size: 11px;
       cursor: pointer;
     }
-
-    .fixture-chip:hover {
-      border-color: var(--accent-cyan);
-    }
-
-    .fixture-chip.selected {
-      border-color: var(--accent-cyan);
-      background: rgba(0, 229, 255, 0.14);
-    }
+    .fixture-chip:hover { border-color: var(--accent-cyan); }
+    .fixture-chip.selected { border-color: var(--accent-cyan); background: rgba(0, 229, 255, 0.14); }
 
     .chip-del {
       display: inline-flex;
@@ -408,33 +325,13 @@
       padding: 0;
       cursor: pointer;
     }
+    .chip-del:hover { background: var(--accent-red); color: #fff; }
 
-    .chip-del:hover {
-      background: var(--accent-red);
-      color: #fff;
-    }
-
-    /* Resizer */
-    .pane-resizer {
-      width: 5px;
-      background: #161b26;
-      cursor: col-resize;
-      transition: background 0.15s;
-      flex-shrink: 0;
-    }
-
-    .pane-resizer:hover {
-      background: var(--accent-cyan);
-    }
+    .pane-resizer { width: 5px; background: #161b26; cursor: col-resize; transition: background 0.15s; flex-shrink: 0; }
+    .pane-resizer:hover { background: var(--accent-cyan); }
 
     /* Right Timeline Pane */
-    .timeline-pane {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      min-width: 0;
-      background: var(--bg-root);
-    }
+    .timeline-pane { flex: 1; display: flex; flex-direction: column; min-width: 0; background: var(--bg-root); }
 
     .timeline-toolbar {
       height: 34px;
@@ -448,18 +345,9 @@
       flex-shrink: 0;
     }
 
-    .timeline-scroll-area {
-      flex: 1;
-      overflow: auto;
-      position: relative;
-    }
+    .timeline-scroll-area { flex: 1; overflow: auto; position: relative; }
+    .timeline-inner { position: relative; min-width: 100%; }
 
-    .timeline-inner {
-      position: relative;
-      min-width: 100%;
-    }
-
-    /* Ruler Row */
     .ruler-row {
       position: sticky;
       top: 0;
@@ -486,22 +374,10 @@
       color: var(--text-dim);
     }
 
-    #rulerCanvas {
-      display: block;
-      cursor: ew-resize;
-    }
+    #rulerCanvas { display: block; cursor: ew-resize; }
 
-    /* Track Rows */
-    .track-row {
-      display: flex;
-      border-bottom: 1px solid var(--border);
-      background: var(--bg-track);
-      position: relative;
-    }
-
-    .track-row:nth-child(even) {
-      background: var(--bg-track-alt);
-    }
+    .track-row { display: flex; border-bottom: 1px solid var(--border); background: var(--bg-track); position: relative; }
+    .track-row:nth-child(even) { background: var(--bg-track-alt); }
 
     .track-header {
       position: sticky;
@@ -517,60 +393,16 @@
       justify-content: space-between;
       gap: 4px;
     }
+    .track-row:nth-child(even) .track-header { background: #1a202d; }
 
-    .track-row:nth-child(even) .track-header {
-      background: #1a202d;
-    }
+    .track-title-line { display: flex; align-items: center; justify-content: space-between; gap: 4px; }
+    .track-name { font-weight: 600; font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 145px; }
+    .role-pill { font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 3px; text-transform: uppercase; letter-spacing: 0.3px; }
+    .track-meta-line { display: flex; align-items: center; justify-content: space-between; font-size: 10.5px; color: var(--text-dim); }
+    .track-val-readout { font-family: monospace; color: var(--accent-cyan); font-weight: 600; }
+    .track-canvas-holder { position: relative; flex: 1; }
+    .track-canvas { display: block; }
 
-    .track-title-line {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 4px;
-    }
-
-    .track-name {
-      font-weight: 600;
-      font-size: 12px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      max-width: 145px;
-    }
-
-    .role-pill {
-      font-size: 10px;
-      font-weight: 700;
-      padding: 1px 6px;
-      border-radius: 3px;
-      text-transform: uppercase;
-      letter-spacing: 0.3px;
-    }
-
-    .track-meta-line {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      font-size: 10.5px;
-      color: var(--text-dim);
-    }
-
-    .track-val-readout {
-      font-family: monospace;
-      color: var(--accent-cyan);
-      font-weight: 600;
-    }
-
-    .track-canvas-holder {
-      position: relative;
-      flex: 1;
-    }
-
-    .track-canvas {
-      display: block;
-    }
-
-    /* Playhead Overlay */
     .playhead-line {
       position: absolute;
       top: 0;
@@ -594,10 +426,7 @@
       z-index: 100;
       padding: 16px;
     }
-
-    .modal-backdrop.open {
-      display: flex;
-    }
+    .modal-backdrop.open { display: flex; }
 
     .modal-box {
       background: #161b26;
@@ -611,113 +440,25 @@
       box-shadow: 0 18px 48px rgba(0, 0, 0, 0.75);
     }
 
-    .modal-header {
-      padding: 12px 16px;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      font-weight: 700;
-      font-size: 13.5px;
-    }
+    .modal-header { padding: 12px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; font-weight: 700; font-size: 13.5px; }
+    .modal-body { padding: 14px 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
+    .modal-footer { padding: 10px 16px; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: flex-end; gap: 8px; }
 
-    .modal-body {
-      padding: 14px 16px;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
+    .form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .form-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .form-field { display: flex; flex-direction: column; gap: 4px; }
+    .form-field label { font-size: 11px; color: var(--text-dim); }
+    .form-field input, .form-field select { width: 100%; }
 
-    .modal-footer {
-      padding: 10px 16px;
-      border-top: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      gap: 8px;
-    }
-
-    .form-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 10px;
-    }
-
-    .form-grid-3 {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
-    }
-
-    .form-field {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-
-    .form-field label {
-      font-size: 11px;
-      color: var(--text-dim);
-    }
-
-    .form-field input, .form-field select {
-      width: 100%;
-    }
-
-    .section-card {
-      background: #11151e;
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      padding: 10px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .section-card-title {
-      font-size: 11.5px;
-      font-weight: 700;
-      color: var(--accent-cyan);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .send-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr 32px;
-      gap: 6px;
-      align-items: center;
-    }
+    .section-card { background: #11151e; border: 1px solid var(--border); border-radius: 6px; padding: 10px; display: flex; flex-direction: column; gap: 8px; }
+    .section-card-title { font-size: 11.5px; font-weight: 700; color: var(--accent-cyan); display: flex; align-items: center; justify-content: space-between; }
+    .send-row { display: grid; grid-template-columns: 1fr 1fr 32px; gap: 6px; align-items: center; }
 
     /* DMX Monitor Grid */
-    .dmx-grid {
-      display: grid;
-      grid-template-columns: repeat(16, 1fr);
-      gap: 3px;
-    }
-
-    .dmx-cell {
-      background: #0d1017;
-      border: 1px solid #222938;
-      border-radius: 3px;
-      padding: 2px;
-      text-align: center;
-      font-family: monospace;
-      font-size: 9.5px;
-    }
-
-    .dmx-cell .ch {
-      color: var(--text-muted);
-      display: block;
-      font-size: 8.5px;
-    }
-
-    .dmx-cell .val {
-      color: var(--text-main);
-      font-weight: 700;
-    }
+    .dmx-grid { display: grid; grid-template-columns: repeat(16, 1fr); gap: 3px; }
+    .dmx-cell { background: #0d1017; border: 1px solid #222938; border-radius: 3px; padding: 2px; text-align: center; font-family: monospace; font-size: 9.5px; }
+    .dmx-cell .ch { color: var(--text-muted); display: block; font-size: 8.5px; }
+    .dmx-cell .val { color: var(--text-main); font-weight: 700; }
 
     /* Toast */
     .toast {
@@ -731,36 +472,153 @@
       border-radius: 6px;
       font-size: 12px;
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
-      z-index: 200;
+      z-index: 260;
       opacity: 0;
       transform: translateY(10px);
       pointer-events: none;
       transition: opacity 0.2s, transform 0.2s;
     }
+    .toast.show { opacity: 1; transform: translateY(0); }
 
-    .toast.show {
-      opacity: 1;
-      transform: translateY(0);
+    .empty-hint { padding: 40px 20px; text-align: center; color: var(--text-dim); line-height: 1.7; }
+
+    /* =========================================================
+       Tutorial & Interactive Training Overlay Styles
+       ========================================================= */
+    .tutorial-spotlight {
+      position: fixed;
+      border: 2px solid var(--accent-cyan);
+      border-radius: 7px;
+      box-shadow: 0 0 0 9999px rgba(4, 6, 11, 0.72), 0 0 22px rgba(0, 229, 255, 0.65);
+      pointer-events: none;
+      z-index: 180;
+      transition: top 0.25s ease, left 0.25s ease, width 0.25s ease, height 0.25s ease;
+      display: none;
+    }
+    .tutorial-spotlight.active { display: block; }
+
+    .tutorial-card {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 440px;
+      max-width: calc(100vw - 32px);
+      background: linear-gradient(180deg, #1a2130 0%, #131824 100%);
+      border: 1.5px solid var(--accent-cyan);
+      border-radius: 10px;
+      box-shadow: 0 18px 50px rgba(0, 0, 0, 0.85), 0 0 24px rgba(0, 229, 255, 0.2);
+      z-index: 190;
+      display: none;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .tutorial-card.active { display: flex; }
+
+    .tut-header {
+      padding: 10px 14px;
+      background: rgba(0, 229, 255, 0.1);
+      border-bottom: 1px solid var(--border-light);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: move;
     }
 
-    .empty-hint {
-      padding: 40px 20px;
-      text-align: center;
-      color: var(--text-dim);
-      line-height: 1.7;
+    .tut-step-badge {
+      background: var(--accent-cyan);
+      color: #051318;
+      font-weight: 800;
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 12px;
+    }
+
+    .tut-progress-bar {
+      height: 3px;
+      background: #10141d;
+      width: 100%;
+    }
+    .tut-progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple));
+      transition: width 0.25s ease;
+    }
+
+    .tut-body {
+      padding: 13px 15px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .tut-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .tut-desc {
+      font-size: 12px;
+      line-height: 1.65;
+      color: #cfd8ea;
+    }
+
+    .tut-mission-box {
+      background: #0c1018;
+      border: 1px solid var(--border-light);
+      border-left: 3px solid var(--accent-orange);
+      border-radius: 6px;
+      padding: 9px 11px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .tut-mission-box.completed {
+      border-left-color: var(--accent-green);
+      background: rgba(0, 230, 118, 0.08);
+    }
+
+    .tut-mission-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--accent-orange);
+    }
+
+    .tut-mission-box.completed .tut-mission-head {
+      color: var(--accent-green);
+    }
+
+    .tut-mission-text {
+      font-size: 11.5px;
+      color: var(--text-main);
+      line-height: 1.5;
+    }
+
+    .tut-footer {
+      padding: 10px 14px;
+      background: #10141d;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
     }
   </style>
 </head>
 <body>
 
   <!-- Top Transport & Hardware Bar -->
-  <header class="topbar">
+  <header class="topbar" id="topbarArea">
     <div class="brand">
       <span class="brand-dot"></span>
       <span>LumiDAW 3D DMX</span>
     </div>
 
-    <div class="transport-group">
+    <div class="transport-group" id="transportControls">
       <button id="btnPlay" class="primary" title="再生 / 一時停止 (Space)">▶ 再生</button>
       <button id="btnStop" title="停止して先頭へ">■ 停止</button>
       <button id="btnLoop" class="active-green" title="ループ再生切替">↻ ループ</button>
@@ -783,7 +641,7 @@
       </div>
     </div>
 
-    <div class="transport-group">
+    <div class="transport-group" id="dmxHardwareGroup">
       <select id="selProtocol" title="DMX USB プロトコル選択">
         <option value="enttec-pro">ENTTEC DMX USB PRO</option>
         <option value="open-dmx">Open DMX USB (FTDI)</option>
@@ -796,7 +654,8 @@
       <button id="btnDmxMonitor" title="512ch DMX出力モニター">512ch</button>
     </div>
 
-    <div style="display:flex;align-items:center;gap:5px;margin-left:auto;">
+    <div id="projectActionsGroup" style="display:flex;align-items:center;gap:5px;margin-left:auto;">
+      <button id="btnStartTutorial" class="tutorial-launch" title="機能と操作方法を順番に学べるチュートリアル＆トレーニングモード">🎓 チュートリアル開始</button>
       <button id="btnUndo" title="元に戻す (Ctrl+Z)">↶ Undo</button>
       <button id="btnSaveJson">💾 保存</button>
       <button id="btnLoadJson">📂 読込</button>
@@ -806,7 +665,7 @@
   </header>
 
   <!-- Automation Drawing & Smoothing Ribbon -->
-  <div class="toolribbon">
+  <div class="toolribbon" id="toolRibbonArea">
     <span style="color:var(--text-dim);font-size:11px;">描画ツール <span style="color:var(--text-muted);">(左クリック=<span style="color:var(--accent-cyan);">L</span> / 右クリック=<span style="color:var(--accent-orange);">R</span>)</span>:</span>
 
     <button class="tool-btn" data-tool="select" title="キーフレーム移動・追加(ダブルクリック)・ベジェハンドル編集">↖ 選択/編集</button>
@@ -895,8 +754,8 @@
     <div class="pane-resizer" id="paneResizer"></div>
 
     <!-- Right: DAW Timeline -->
-    <section class="timeline-pane">
-      <div class="timeline-toolbar">
+    <section class="timeline-pane" id="timelinePane">
+      <div class="timeline-toolbar" id="timelineToolbarArea">
         <div style="display:flex;align-items:center;gap:6px;">
           <button id="btnAddManualTrack" style="padding:3px 8px;font-size:11px;">+ 単体DMXトラック</button>
           <button id="btnAddMovie" style="padding:3px 8px;font-size:11px;">🎬 + ムービー (音声自動分離)</button>
@@ -924,6 +783,40 @@
         </div>
       </div>
     </section>
+  </div>
+
+  <!-- Tutorial Spotlight & Interactive Guide Card -->
+  <div id="tutorialSpotlight" class="tutorial-spotlight"></div>
+  <div id="tutorialCard" class="tutorial-card">
+    <div class="tut-header" id="tutDragHeader">
+      <div style="display:flex;align-items:center;gap:8px;">
+        <span id="tutStepBadge" class="tut-step-badge">STEP 1 / 9</span>
+        <span style="font-size:11px;color:var(--text-dim);">チュートリアル ＆ トレーニング</span>
+      </div>
+      <button id="btnTutClose" style="padding:2px 7px;font-size:11px;" title="チュートリアルを終了">✕ 終了</button>
+    </div>
+    <div class="tut-progress-bar">
+      <div id="tutProgressFill" class="tut-progress-fill" style="width:11%;"></div>
+    </div>
+    <div class="tut-body">
+      <div id="tutTitle" class="tut-title">ステップタイトル</div>
+      <div id="tutDesc" class="tut-desc">説明文</div>
+      <div id="tutMissionBox" class="tut-mission-box">
+        <div class="tut-mission-head">
+          <span id="tutMissionLabel">🎯 トレーニング課題</span>
+          <span id="tutMissionStatus">未完了</span>
+        </div>
+        <div id="tutMissionText" class="tut-mission-text">課題内容</div>
+        <div id="tutDemoActionWrap" style="margin-top:3px;display:none;">
+          <button id="btnTutDemoAction" class="primary" style="padding:3px 9px;font-size:11px;">⚡ 自動デモを実行して体験</button>
+        </div>
+      </div>
+    </div>
+    <div class="tut-footer">
+      <button id="btnTutPrev">◀ 前へ</button>
+      <span id="tutHintText" style="font-size:10.5px;color:var(--text-muted);">直接操作でもスキップでも進行可</span>
+      <button id="btnTutNext" class="primary">次へ ▶</button>
+    </div>
   </div>
 
   <!-- Modal 1: Add Lighting Fixture -->
@@ -956,7 +849,7 @@
             <span>3Dステージ配置座標 ＆ アングル</span>
             <div style="display:flex;gap:4px;">
               <button type="button" id="btnPresetHang" style="padding:2px 6px;font-size:10.5px;">天吊り (Y=4.5m, RotX=180°)</button>
-              <button type="button" id="btnPresetFloor" style="padding:2px 6px;font-size:10.5px;">床置き (Y=0.3m, RotX=0°)</button>
+              <button type="button" id="btnPresetFloor" style="padding:2px 6px;font-size:10.5px;">床置き (Y=0.2m, RotX=0°)</button>
             </div>
           </div>
           <div class="form-grid-3">
@@ -1000,9 +893,7 @@
         </div>
 
         <div class="section-card">
-          <div class="section-card-title">
-            <span>DMX パッチ ＆ チャンネル構成</span>
-          </div>
+          <div class="section-card-title"><span>DMX パッチ ＆ チャンネル構成</span></div>
           <div class="form-grid">
             <div class="form-field">
               <label>スタートアドレス (1〜512)</label>
@@ -1072,7 +963,6 @@
           </div>
         </div>
 
-        <!-- Send Routing (Max 8) -->
         <div class="section-card">
           <div class="section-card-title">
             <span>Send ルーティング (他CHへ同時送信 / 最大8系統)</span>
@@ -1081,7 +971,6 @@
           <div id="tsSendsList" style="display:flex;flex-direction:column;gap:6px;"></div>
         </div>
 
-        <!-- Belonging Fixture Section -->
         <div id="tsFixtureSection" class="section-card" style="display:none;">
           <div class="section-card-title">
             <span id="tsFixtureTitle">所属する3D機器のプロパティ</span>
@@ -1249,27 +1138,23 @@
         trackHeight: 76,
         snapBeat: 1,
 
-        // Tool assignment (Left & Right mouse buttons)
         leftTool: 'freehand',
         rightTool: 'select',
         parabolaConvex: true,
         autoSmooth: true,
         smoothStrength: 5,
 
-        // Stage size (meters)
         stageSize: { width: 12, depth: 8 },
 
-        // Entities
-        fixtures: [],     // { id, name, type, pos:{x,y,z}, rot:{x,y,z}, beamAngle, beamLength, startAddr, chCount }
-        tracks: [],       // { id, fixtureId, name, role, channel, sends:[{channel, amount}], keyframes:[{id, beat, value, cp1, cp2}] }
-        movieTracks: [],  // { id, name, duration, keyframes, screen:{pos,rot,width,height,gain}, videoEl, texture, mesh }
-        audioTracks: [],  // { id, movieId, name, duration, peaks, audioBuffer, volume }
+        fixtures: [],
+        tracks: [],
+        movieTracks: [],
+        audioTracks: [],
 
         selectedTrackId: null,
         selectedFixtureId: null,
         undoStack: [],
 
-        // DMX Buffer (1-indexed 1..512 stored at index 1..512)
         dmxBuffer: new Uint8Array(513)
       };
 
@@ -1336,7 +1221,6 @@
 
         if (preserveMedia) {
           const oldMovies = new Map(state.movieTracks.map(m => [m.id, m]));
-          // Remove meshes of deleted movie tracks
           state.movieTracks.forEach(m => {
             if (!data.movieTracks?.some(dm => dm.id === m.id) && m.mesh) {
               scene.remove(m.mesh);
@@ -1361,17 +1245,12 @@
             return existing ? { ...existing, name: da.name, volume: da.volume } : { ...da, peaks: [], audioBuffer: null };
           });
         } else {
-          // Clear all media
           state.movieTracks.forEach(m => {
             if (m.mesh) scene.remove(m.mesh);
             if (m.videoEl) { m.videoEl.pause(); m.videoEl.src = ''; }
           });
-          state.movieTracks = (data.movieTracks || []).map(dm => ({
-            ...dm, videoEl: null, texture: null, mesh: null
-          }));
-          state.audioTracks = (data.audioTracks || []).map(da => ({
-            ...da, peaks: [], audioBuffer: null
-          }));
+          state.movieTracks = (data.movieTracks || []).map(dm => ({ ...dm, videoEl: null, texture: null, mesh: null }));
+          state.audioTracks = (data.audioTracks || []).map(da => ({ ...da, peaks: [], audioBuffer: null }));
         }
 
         rebuildStageFloor();
@@ -1382,7 +1261,7 @@
       }
 
       // =========================================================
-      // 3. Three.js 3D Virtual Stage (NO Truss, Dynamic Size, RGB*Dimmer)
+      // 3. Three.js 3D Virtual Stage (No Truss, Dynamic Size, RGB*Dimmer)
       // =========================================================
       const stageCanvas = document.getElementById('stageCanvas');
       const stageWrap = document.getElementById('stageCanvasWrap');
@@ -1401,14 +1280,12 @@
       controls.dampingFactor = 0.07;
       controls.target.set(0, 1.8, 0);
 
-      // Subtle ambient & directional studio lighting so stage floor and fixture bodies are visible
       const hemiLight = new THREE.HemisphereLight(0x8fa8d6, 0x161a24, 0.55);
       scene.add(hemiLight);
       const dirLight = new THREE.DirectionalLight(0xcfe0ff, 0.45);
       dirLight.position.set(8, 16, 10);
       scene.add(dirLight);
 
-      // Stage Floor Group (Rebuilt dynamically when stageSize changes; NO Truss!)
       const stageFloorGroup = new THREE.Group();
       scene.add(stageFloorGroup);
 
@@ -1426,18 +1303,12 @@
         const w = Math.max(4, Number(state.stageSize.width) || 12);
         const d = Math.max(4, Number(state.stageSize.depth) || 8);
 
-        // Main dark matte stage deck
         const floorGeo = new THREE.PlaneGeometry(w, d);
-        const floorMat = new THREE.MeshStandardMaterial({
-          color: 0x121620,
-          roughness: 0.78,
-          metalness: 0.15
-        });
+        const floorMat = new THREE.MeshStandardMaterial({ color: 0x121620, roughness: 0.78, metalness: 0.15 });
         const floorMesh = new THREE.Mesh(floorGeo, floorMat);
         floorMesh.rotation.x = -Math.PI / 2;
         stageFloorGroup.add(floorMesh);
 
-        // Custom 1m grid lines matching exact width & depth
         const gridPoints = [];
         const halfW = w / 2;
         const halfD = d / 2;
@@ -1448,10 +1319,8 @@
           gridPoints.push(new THREE.Vector3(-halfW, 0.004, z), new THREE.Vector3(halfW, 0.004, z));
         }
         const gridGeo = new THREE.BufferGeometry().setFromPoints(gridPoints);
-        const gridMat = new THREE.LineBasicMaterial({ color: 0x232c3d });
-        stageFloorGroup.add(new THREE.LineSegments(gridGeo, gridMat));
+        stageFloorGroup.add(new THREE.LineSegments(gridGeo, new THREE.LineBasicMaterial({ color: 0x232c3d })));
 
-        // Glowing cyan stage perimeter border
         const borderPts = [
           new THREE.Vector3(-halfW, 0.01, -halfD),
           new THREE.Vector3(halfW, 0.01, -halfD),
@@ -1459,19 +1328,19 @@
           new THREE.Vector3(-halfW, 0.01, halfD),
           new THREE.Vector3(-halfW, 0.01, -halfD)
         ];
-        const borderGeo = new THREE.BufferGeometry().setFromPoints(borderPts);
-        const borderMat = new THREE.LineBasicMaterial({ color: 0x00bcd4 });
-        stageFloorGroup.add(new THREE.Line(borderGeo, borderMat));
+        stageFloorGroup.add(new THREE.Line(
+          new THREE.BufferGeometry().setFromPoints(borderPts),
+          new THREE.LineBasicMaterial({ color: 0x00bcd4 })
+        ));
 
-        // Subtle Downstage (Front) indicator marker
-        const frontGeo = new THREE.BoxGeometry(Math.min(2.4, w * 0.3), 0.03, 0.08);
-        const frontMat = new THREE.MeshBasicMaterial({ color: 0x00e5ff });
-        const frontMarker = new THREE.Mesh(frontGeo, frontMat);
+        const frontMarker = new THREE.Mesh(
+          new THREE.BoxGeometry(Math.min(2.4, w * 0.3), 0.03, 0.08),
+          new THREE.MeshBasicMaterial({ color: 0x00e5ff })
+        );
         frontMarker.position.set(0, 0.015, halfD);
         stageFloorGroup.add(frontMarker);
       }
 
-      // 3D Fixture Meshes Map: fixtureId -> { root, panPivot, tiltPivot, lensMat, beamMesh, beamMat, spotMesh, spotMat, currentBeamAngle, currentBeamLength }
       const fixture3DMap = new Map();
 
       function createBeamGeometry(beamAngleDeg, beamLength) {
@@ -1479,9 +1348,7 @@
         const len = Math.max(2, beamLength || 12);
         const halfRad = THREE.MathUtils.degToRad(clampedAngle * 0.5);
         const bottomRadius = Math.max(0.12, Math.tan(halfRad) * len);
-        const topRadius = 0.07;
-        const geo = new THREE.CylinderGeometry(topRadius, bottomRadius, len, 28, 1, true);
-        // Shift so top aperture is at y = 0 and cone extends along -Y
+        const geo = new THREE.CylinderGeometry(0.07, bottomRadius, len, 28, 1, true);
         geo.translate(0, -len / 2, 0);
         return geo;
       }
@@ -1499,17 +1366,14 @@
         const bodyMat = new THREE.MeshStandardMaterial({ color: 0x222733, roughness: 0.45, metalness: 0.65 });
         const accentMat = new THREE.MeshStandardMaterial({ color: 0x384257, roughness: 0.4, metalness: 0.7 });
 
-        // Base housing
         const baseMesh = new THREE.Mesh(new THREE.BoxGeometry(0.34, 0.14, 0.34), bodyMat);
         baseMesh.position.y = 0.07;
         root.add(baseMesh);
 
-        // Pan Pivot (Y axis)
         const panPivot = new THREE.Group();
         panPivot.position.y = 0.14;
         root.add(panPivot);
 
-        // Yoke arms for moving fixtures
         if (fx.type === 'spot' || fx.type === 'wash') {
           const yokeLeft = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.28, 0.08), accentMat);
           yokeLeft.position.set(-0.16, 0.14, 0);
@@ -1518,17 +1382,10 @@
           panPivot.add(yokeLeft, yokeRight);
         }
 
-        // Tilt Pivot (X axis)
         const tiltPivot = new THREE.Group();
         tiltPivot.position.y = (fx.type === 'spot' || fx.type === 'wash') ? 0.24 : 0.1;
         panPivot.add(tiltPivot);
 
-        // Head housing (points along +Y in local space before rotation; note 180deg RotX aims +Y downward toward stage!)
-        // Wait: let's keep consistent convention:
-        // When RotX = 180° (hanging from ceiling), local +Y points straight DOWN (-Y in world)!
-        // Let's make beam emit along local +Y so that:
-        // - RotX = 0° (floor uplight): local +Y points straight UP (+Y world)
-        // - RotX = 180° (ceiling downlight): local +Y points straight DOWN (-Y world)
         const headGeo = fx.type === 'bar'
           ? new THREE.BoxGeometry(0.85, 0.16, 0.16)
           : new THREE.CylinderGeometry(0.14, 0.16, 0.28, 20);
@@ -1536,10 +1393,7 @@
         headMesh.position.y = 0.12;
         tiltPivot.add(headMesh);
 
-        // Glowing Lens Aperture at tip (+Y = 0.26)
-        const lensGeo = fx.type === 'bar'
-          ? new THREE.PlaneGeometry(0.78, 0.11)
-          : new THREE.CircleGeometry(0.125, 20);
+        const lensGeo = fx.type === 'bar' ? new THREE.PlaneGeometry(0.78, 0.11) : new THREE.CircleGeometry(0.125, 20);
         const lensMat = new THREE.MeshStandardMaterial({
           color: 0x090b10,
           emissive: new THREE.Color(0, 0, 0),
@@ -1551,11 +1405,9 @@
         lensMesh.position.y = fx.type === 'bar' ? 0.205 : 0.262;
         tiltPivot.add(lensMesh);
 
-        // Volumetric Light Beam Cone extending along +Y from lens
         const beamAngle = fx.beamAngle || 18;
         const beamLength = fx.beamLength || 12;
         const beamGeo = createBeamGeometry(beamAngle, beamLength);
-        // Flip beam geometry so it extends along +Y from y = 0.26
         beamGeo.rotateX(Math.PI);
         beamGeo.translate(0, 0.26, 0);
 
@@ -1571,7 +1423,6 @@
         beamMesh.visible = false;
         tiltPivot.add(beamMesh);
 
-        // Floor Spot Projection Disc (placed in world space on y = 0.015)
         const spotGeo = new THREE.CircleGeometry(1, 32);
         spotGeo.rotateX(-Math.PI / 2);
         const spotMat = new THREE.MeshBasicMaterial({
@@ -1587,14 +1438,7 @@
 
         scene.add(root);
         return {
-          root,
-          panPivot,
-          tiltPivot,
-          lensMat,
-          beamMesh,
-          beamMat,
-          spotMesh,
-          spotMat,
+          root, panPivot, tiltPivot, lensMat, beamMesh, beamMat, spotMesh, spotMat,
           currentBeamAngle: beamAngle,
           currentBeamLength: beamLength
         };
@@ -1646,7 +1490,6 @@
         });
       }
 
-      // Reusable vectors for floor spot raycasting
       const _rayOrigin = new THREE.Vector3();
       const _rayDir = new THREE.Vector3();
       const _worldQuat = new THREE.Quaternion();
@@ -1658,7 +1501,6 @@
           const obj = fixture3DMap.get(fx.id);
           if (!obj) return;
 
-          // Gather channel values belonging to this fixture
           const fxTracks = state.tracks.filter(t => t.fixtureId === fx.id);
           let hasColorRole = false;
           let hasDimmerRole = false;
@@ -1670,60 +1512,26 @@
             const dmx = state.dmxBuffer[t.channel] || 0;
             const norm = dmx / 255;
             switch (t.role) {
-              case 'dimmer':
-                hasDimmerRole = true;
-                dimmerVal = Math.max(dimmerVal, norm);
-                break;
-              case 'red':
-                hasColorRole = true;
-                r += norm;
-                break;
-              case 'green':
-                hasColorRole = true;
-                g += norm;
-                break;
-              case 'blue':
-                hasColorRole = true;
-                b += norm;
-                break;
-              case 'white':
-                hasColorRole = true;
-                w += norm;
-                break;
-              case 'amber':
-                hasColorRole = true;
-                a += norm;
-                break;
-              case 'uv':
-                hasColorRole = true;
-                uv += norm;
-                break;
-              case 'pan':
-                panNorm = norm;
-                break;
-              case 'tilt':
-                tiltNorm = norm;
-                break;
-              case 'strobe':
-                strobeNorm = norm;
-                break;
-              case 'zoom':
-                zoomNorm = norm;
-                break;
+              case 'dimmer': hasDimmerRole = true; dimmerVal = Math.max(dimmerVal, norm); break;
+              case 'red':    hasColorRole = true; r += norm; break;
+              case 'green':  hasColorRole = true; g += norm; break;
+              case 'blue':   hasColorRole = true; b += norm; break;
+              case 'white':  hasColorRole = true; w += norm; break;
+              case 'amber':  hasColorRole = true; a += norm; break;
+              case 'uv':     hasColorRole = true; uv += norm; break;
+              case 'pan':    panNorm = norm; break;
+              case 'tilt':   tiltNorm = norm; break;
+              case 'strobe': strobeNorm = norm; break;
+              case 'zoom':   zoomNorm = norm; break;
             }
           });
 
-          // Apply Pan & Tilt mechanical angles
-          const panDeg = (panNorm - 0.5) * 360;   // -180..+180 deg
-          const tiltDeg = (tiltNorm - 0.5) * 220; // -110..+110 deg
-          obj.panPivot.rotation.y = THREE.MathUtils.degToRad(panDeg);
-          obj.tiltPivot.rotation.x = THREE.MathUtils.degToRad(tiltDeg);
+          obj.panPivot.rotation.y = THREE.MathUtils.degToRad((panNorm - 0.5) * 360);
+          obj.tiltPivot.rotation.x = THREE.MathUtils.degToRad((tiltNorm - 0.5) * 220);
 
-          // Apply Zoom modulation if a zoom channel is active on this fixture
           const baseAngle = Math.max(2, Math.min(90, fx.beamAngle || 18));
           let effectiveAngle = baseAngle;
           if (zoomNorm !== null) {
-            // Zoom scales beam angle between 0.4x and 1.8x around baseAngle (clamped 2..90)
             effectiveAngle = Math.max(2, Math.min(90, baseAngle * (0.4 + zoomNorm * 1.4)));
             const scaleRatio = Math.tan(THREE.MathUtils.degToRad(effectiveAngle * 0.5)) /
                                Math.tan(THREE.MathUtils.degToRad(baseAngle * 0.5));
@@ -1732,35 +1540,25 @@
             obj.beamMesh.scale.set(1, 1, 1);
           }
 
-          // =========================================================
-          // Photometric Logic:
           // Additive RGB/W/A/UV color energy multiplied by Dimmer (0.0 .. 1.0x)
-          // If RGB/color channels are 0, Dimmer > 0 produces ZERO light!
-          // =========================================================
           let rawR = 0, rawG = 0, rawB = 0;
           if (hasColorRole) {
             rawR = r + w + a * 1.0 + uv * 0.35;
             rawG = g + w + a * 0.45;
             rawB = b + w + uv * 0.85;
           } else if (hasDimmerRole) {
-            // Single-channel dimmer-only fixture (no RGB channels assigned)
-            rawR = 1.0;
-            rawG = 0.96;
-            rawB = 0.88;
+            rawR = 1.0; rawG = 0.96; rawB = 0.88;
           }
 
           const dimmerMultiplier = (hasDimmerRole ? Math.max(0, Math.min(1.0, dimmerVal)) : 1.0) * masterScale;
-
           const outR = Math.min(1.0, rawR) * dimmerMultiplier;
           const outG = Math.min(1.0, rawG) * dimmerMultiplier;
           const outB = Math.min(1.0, rawB) * dimmerMultiplier;
 
-          // Strobe modulation
           let strobeGate = 1.0;
           if (strobeNorm > 0.04) {
             const hz = 1.5 + strobeNorm * 22;
-            const phase = (nowSec * hz) % 1;
-            strobeGate = phase < 0.42 ? 1.0 : 0.0;
+            strobeGate = ((nowSec * hz) % 1) < 0.42 ? 1.0 : 0.0;
           }
 
           const effectiveBrightness = Math.max(outR, outG, outB) * strobeGate;
@@ -1771,11 +1569,8 @@
             obj.lensMat.emissive.setRGB(0, 0, 0);
             obj.lensMat.emissiveIntensity = 0;
           } else {
-            // Pure hue normalized by max channel so color tint remains accurate at any dimmer level
             const peak = Math.max(outR, outG, outB, 0.0001);
-            const hueR = outR / peak;
-            const hueG = outG / peak;
-            const hueB = outB / peak;
+            const hueR = outR / peak, hueG = outG / peak, hueB = outB / peak;
 
             obj.beamMesh.visible = true;
             obj.beamMat.color.setRGB(hueR, hueG, hueB);
@@ -1784,21 +1579,17 @@
             obj.lensMat.emissive.setRGB(hueR, hueG, hueB);
             obj.lensMat.emissiveIntensity = effectiveBrightness * 2.2;
 
-            // Floor spot projection raycast along tiltPivot local +Y
             obj.tiltPivot.updateWorldMatrix(true, false);
             _rayOrigin.set(0, 0.26, 0).applyMatrix4(obj.tiltPivot.matrixWorld);
             obj.tiltPivot.getWorldQuaternion(_worldQuat);
             _rayDir.set(0, 1, 0).applyQuaternion(_worldQuat).normalize();
 
-            // Check intersection with stage floor plane y = 0
             if (_rayDir.y < -0.02 && _rayOrigin.y > 0) {
               const dist = -_rayOrigin.y / _rayDir.y;
               if (dist > 0 && dist <= (fx.beamLength || 12) * 1.35) {
                 const hitX = _rayOrigin.x + _rayDir.x * dist;
                 const hitZ = _rayOrigin.z + _rayDir.z * dist;
-                const halfW = state.stageSize.width * 0.5;
-                const halfD = state.stageSize.depth * 0.5;
-                if (Math.abs(hitX) <= halfW && Math.abs(hitZ) <= halfD) {
+                if (Math.abs(hitX) <= state.stageSize.width * 0.5 && Math.abs(hitZ) <= state.stageSize.depth * 0.5) {
                   const spotRadius = Math.max(0.12, Math.tan(THREE.MathUtils.degToRad(effectiveAngle * 0.5)) * dist);
                   obj.spotMesh.visible = true;
                   obj.spotMesh.position.set(hitX, 0.014, hitZ);
@@ -1887,7 +1678,7 @@
         const videoEl = document.createElement('video');
         videoEl.src = url;
         videoEl.crossOrigin = 'anonymous';
-        videoEl.muted = true; // Audio handled by extracted Web Audio track
+        videoEl.muted = true;
         videoEl.playsInline = true;
         videoEl.preload = 'auto';
 
@@ -1927,7 +1718,6 @@
         state.movieTracks.push(movieTrack);
         showToast(`ムービー「${file.name}」を読み込みました`);
 
-        // Automatically extract audio track via Web Audio API
         try {
           const arrayBuf = await file.arrayBuffer();
           const ctx = getAudioContext();
@@ -1944,7 +1734,7 @@
           });
           showToast(`音声トラックを自動分離・追加しました`);
         } catch (err) {
-          console.warn('Audio extraction skipped or silent video:', err);
+          console.warn('Audio extraction skipped:', err);
         }
 
         renderTimeline();
@@ -1952,9 +1742,7 @@
       }
 
       function stopAllAudioPlayback() {
-        activeAudioSources.forEach(src => {
-          try { src.stop(); } catch (_) {}
-        });
+        activeAudioSources.forEach(src => { try { src.stop(); } catch (_) {} });
         activeAudioSources = [];
       }
 
@@ -1965,8 +1753,7 @@
         const offsetSec = (beat / state.bpm) * 60;
 
         state.audioTracks.forEach(aud => {
-          if (!aud.audioBuffer) return;
-          if (offsetSec >= aud.duration) return;
+          if (!aud.audioBuffer || offsetSec >= aud.duration) return;
           const src = ctx.createBufferSource();
           src.buffer = aud.audioBuffer;
           const gainNode = ctx.createGain();
@@ -1980,7 +1767,6 @@
 
       function syncMediaToBeat(beat, isPlaying) {
         const timeSec = (beat / state.bpm) * 60;
-
         state.movieTracks.forEach(mov => {
           const opacity = evaluateKeyframes(mov.keyframes, beat);
           if (mov.mesh) {
@@ -1989,7 +1775,6 @@
             mov.mesh.material.opacity = Math.min(1, opacity);
             mov.mesh.material.color.setScalar(gain);
           }
-
           if (mov.videoEl) {
             const targetTime = Math.min(mov.duration - 0.05, Math.max(0, timeSec));
             if (isPlaying) {
@@ -2018,7 +1803,6 @@
         const last = keyframes[keyframes.length - 1];
         if (beat >= last.beat) return last.value;
 
-        // Binary search segment
         let lo = 0, hi = keyframes.length - 1;
         while (lo + 1 < hi) {
           const mid = (lo + hi) >> 1;
@@ -2031,7 +1815,6 @@
         const span = k1.beat - k0.beat;
         if (span <= 1e-6) return k0.value;
 
-        // If Bezier handles exist on k0/k1, evaluate cubic Bezier
         if (k0.cp2 || k1.cp1) {
           const p0x = k0.beat, p0y = k0.value;
           const p3x = k1.beat, p3y = k1.value;
@@ -2040,7 +1823,6 @@
           const p2x = k1.cp1 ? k1.cp1.beat : p3x - span / 3;
           const p2y = k1.cp1 ? k1.cp1.value : p3y;
 
-          // Solve t for x(t) ≈ beat via bisection
           let t0 = 0, t1 = 1, t = 0.5;
           for (let iter = 0; iter < 14; iter++) {
             t = (t0 + t1) * 0.5;
@@ -2058,15 +1840,11 @@
         return k0.value + (k1.value - k0.value) * ratio;
       }
 
-      // Ramer-Douglas-Peucker simplification + Moving Average smoothing
       function rdpSimplify(points, epsilon) {
         if (points.length <= 2) return points;
-        let maxDist = 0;
-        let idx = 0;
-        const first = points[0];
-        const last = points[points.length - 1];
-        const dx = last.beat - first.beat;
-        const dy = last.value - first.value;
+        let maxDist = 0, idx = 0;
+        const first = points[0], last = points[points.length - 1];
+        const dx = last.beat - first.beat, dy = last.value - first.value;
         const lenSq = dx * dx + dy * dy;
 
         for (let i = 1; i < points.length - 1; i++) {
@@ -2075,14 +1853,9 @@
             dist = Math.hypot(points[i].beat - first.beat, points[i].value - first.value);
           } else {
             const t = Math.max(0, Math.min(1, ((points[i].beat - first.beat) * dx + (points[i].value - first.value) * dy) / lenSq));
-            const projX = first.beat + t * dx;
-            const projY = first.value + t * dy;
-            dist = Math.hypot(points[i].beat - projX, points[i].value - projY);
+            dist = Math.hypot(points[i].beat - (first.beat + t * dx), points[i].value - (first.value + t * dy));
           }
-          if (dist > maxDist) {
-            maxDist = dist;
-            idx = i;
-          }
+          if (dist > maxDist) { maxDist = dist; idx = i; }
         }
 
         if (maxDist > epsilon) {
@@ -2108,8 +1881,7 @@
         }
 
         const eps = 0.004 + strength * 0.0035;
-        const simplified = rdpSimplify(arr, eps);
-        return simplified.map(p => ({
+        return rdpSimplify(arr, eps).map(p => ({
           id: p.id || nextId('kf'),
           beat: Number(p.beat.toFixed(4)),
           value: Math.max(0, Math.min(1, Number(p.value.toFixed(4))))
@@ -2127,14 +1899,10 @@
           const dmxVal = Math.round(Math.max(0, Math.min(1, normVal)) * 255);
           track._liveVal = dmxVal;
 
-          // Primary channel (HTP: Highest Takes Precedence)
           if (track.channel >= 1 && track.channel <= 512) {
-            if (dmxVal > state.dmxBuffer[track.channel]) {
-              state.dmxBuffer[track.channel] = dmxVal;
-            }
+            if (dmxVal > state.dmxBuffer[track.channel]) state.dmxBuffer[track.channel] = dmxVal;
           }
 
-          // Sends (up to 8 targets, supporting -100%..+100%)
           if (Array.isArray(track.sends)) {
             track.sends.forEach(send => {
               const ch = Number(send.channel);
@@ -2142,19 +1910,15 @@
                 const amt = Number(send.amount) / 100;
                 const sentNorm = amt >= 0 ? normVal * amt : (1 - normVal) * Math.abs(amt);
                 const sentDmx = Math.round(Math.max(0, Math.min(1, sentNorm)) * 255);
-                if (sentDmx > state.dmxBuffer[ch]) {
-                  state.dmxBuffer[ch] = sentDmx;
-                }
+                if (sentDmx > state.dmxBuffer[ch]) state.dmxBuffer[ch] = sentDmx;
               }
             });
           }
 
-          // Update track header live value readout
           const readoutEl = document.getElementById(`val_${track.id}`);
           if (readoutEl) readoutEl.textContent = `${dmxVal}`;
         });
 
-        // Update movie track readouts
         state.movieTracks.forEach(mov => {
           const pct = Math.round(evaluateKeyframes(mov.keyframes, beat) * 100);
           const el = document.getElementById(`val_${mov.id}`);
@@ -2165,7 +1929,6 @@
         sendDmxOverSerial();
       }
 
-      // Web Serial API for ENTTEC DMX USB PRO & Open DMX USB
       let serialPort = null;
       let serialWriter = null;
       let isSerialSending = false;
@@ -2173,10 +1936,7 @@
       async function toggleDmxConnection() {
         if (serialPort) {
           try {
-            if (serialWriter) {
-              serialWriter.releaseLock();
-              serialWriter = null;
-            }
+            if (serialWriter) { serialWriter.releaseLock(); serialWriter = null; }
             await serialPort.close();
           } catch (_) {}
           serialPort = null;
@@ -2205,6 +1965,7 @@
           serialWriter = port.writable.getWriter();
           updateDmxStatusUI(true, protocol === 'open-dmx' ? 'Open DMX 接続中' : 'ENTTEC PRO 接続中');
           showToast('DMX USBインターフェイスに接続しました');
+          notifyTutorialAction('dmx_connect');
         } catch (err) {
           console.error('DMX USB Connect Error:', err);
           updateDmxStatusUI(false, '接続エラー');
@@ -2213,12 +1974,9 @@
       }
 
       function updateDmxStatusUI(connected, text) {
-        const led = document.getElementById('dmxLed');
-        const label = document.getElementById('dmxStatusText');
-        const btn = document.getElementById('btnConnectDmx');
-        led.classList.toggle('connected', connected);
-        label.textContent = text;
-        btn.textContent = connected ? '🔌 切断' : '🔌 USB接続';
+        document.getElementById('dmxLed').classList.toggle('connected', connected);
+        document.getElementById('dmxStatusText').textContent = text;
+        document.getElementById('btnConnectDmx').textContent = connected ? '🔌 切断' : '🔌 USB接続';
       }
 
       async function sendDmxOverSerial() {
@@ -2227,18 +1985,12 @@
         try {
           const protocol = document.getElementById('selProtocol').value;
           if (protocol === 'enttec-pro') {
-            // ENTTEC DMX USB PRO Packet: 0x7E, Label=6, LenLSB, LenMSB, StartCode=0, 512 bytes, 0xE7
             const packet = new Uint8Array(518);
-            packet[0] = 0x7E;
-            packet[1] = 0x06;
-            packet[2] = 0x01; // 513 & 0xFF
-            packet[3] = 0x02; // (513 >> 8) & 0xFF
-            packet[4] = 0x00; // DMX Start Code
+            packet[0] = 0x7E; packet[1] = 0x06; packet[2] = 0x01; packet[3] = 0x02; packet[4] = 0x00;
             packet.set(state.dmxBuffer.subarray(1, 513), 5);
             packet[517] = 0xE7;
             await serialWriter.write(packet);
           } else {
-            // Open DMX USB (FTDI Break + 513 bytes)
             await serialPort.setSignals({ break: true });
             await new Promise(r => setTimeout(r, 1));
             await serialPort.setSignals({ break: false });
@@ -2296,9 +2048,7 @@
             role,
             channel: ch,
             sends: [],
-            keyframes: [
-              { id: nextId('kf'), beat: 0, value: defaultVal }
-            ]
+            keyframes: [{ id: nextId('kf'), beat: 0, value: defaultVal }]
           });
         }
 
@@ -2306,6 +2056,7 @@
         renderFixtureChips();
         renderTimeline();
         evaluateAtBeat(state.currentBeat);
+        notifyTutorialAction('fixture_added');
         showToast(`機器「${fixture.name}」を登録し ${fixture.chCount}ch 分のトラックを生成しました`);
       }
 
@@ -2327,17 +2078,11 @@
       }
 
       function clearAllProject() {
-        if (!confirm('登録されているすべての照明機器・DMXトラック・ムービー・音声トラックをクリアしますか？\n（Undoで元に戻すことも可能です）')) {
-          return;
-        }
+        if (!confirm('登録されているすべての照明機器・DMXトラック・ムービー・音声トラックをクリアしますか？\n（Undoで元に戻すことも可能です）')) return;
         pushUndo();
         stopPlayback();
 
-        // Dispose 3D fixtures
-        for (const id of Array.from(fixture3DMap.keys())) {
-          removeFixture3D(id);
-        }
-        // Dispose 3D movie screens
+        for (const id of Array.from(fixture3DMap.keys())) removeFixture3D(id);
         state.movieTracks.forEach(m => {
           if (m.mesh) scene.remove(m.mesh);
           if (m.videoEl) { m.videoEl.pause(); m.videoEl.src = ''; }
@@ -2374,14 +2119,14 @@
             <span>💡 <strong>${escapeHtml(fx.name)}</strong> <span style="color:var(--text-dim);">CH ${fx.startAddr}-${endAddr} (${fx.beamAngle}°)</span></span>
             <button type="button" class="chip-del" title="この機器を削除">✕</button>
           `;
-          chip.addEventListener('click', (e) => {
+          chip.addEventListener('click', e => {
             if (e.target.closest('.chip-del')) return;
             state.selectedFixtureId = fx.id;
             renderFixtureChips();
             const firstTrk = state.tracks.find(t => t.fixtureId === fx.id);
             if (firstTrk) openTrackSettingsModal(firstTrk.id);
           });
-          chip.querySelector('.chip-del').addEventListener('click', (e) => {
+          chip.querySelector('.chip-del').addEventListener('click', e => {
             e.stopPropagation();
             deleteFixture(fx.id);
           });
@@ -2392,36 +2137,16 @@
       // =========================================================
       // 8. Timeline Rendering & Interactive Automation Canvas
       // =========================================================
-      function getTotalBeats() {
-        return state.totalBars * 4;
-      }
-
-      function getTimelineWidthPx() {
-        return Math.max(800, getTotalBeats() * state.pixelsPerBeat);
-      }
-
-      function beatToX(beat) {
-        return beat * state.pixelsPerBeat;
-      }
-
+      function getTotalBeats() { return state.totalBars * 4; }
+      function getTimelineWidthPx() { return Math.max(800, getTotalBeats() * state.pixelsPerBeat); }
+      function beatToX(beat) { return beat * state.pixelsPerBeat; }
       function xToBeat(x) {
         let b = Math.max(0, Math.min(getTotalBeats(), x / state.pixelsPerBeat));
-        if (state.snapBeat > 0) {
-          b = Math.round(b / state.snapBeat) * state.snapBeat;
-        }
+        if (state.snapBeat > 0) b = Math.round(b / state.snapBeat) * state.snapBeat;
         return Number(b.toFixed(4));
       }
-
-      function valToY(val, height) {
-        const pad = 7;
-        return pad + (1 - Math.max(0, Math.min(1, val))) * (height - pad * 2);
-      }
-
-      function yToVal(y, height) {
-        const pad = 7;
-        const norm = 1 - (y - pad) / (height - pad * 2);
-        return Math.max(0, Math.min(1, Number(norm.toFixed(4))));
-      }
+      function valToY(val, height) { const pad = 7; return pad + (1 - Math.max(0, Math.min(1, val))) * (height - pad * 2); }
+      function yToVal(y, height) { const pad = 7; return Math.max(0, Math.min(1, Number((1 - (y - pad) / (height - pad * 2)).toFixed(4)))); }
 
       function renderRuler() {
         const canvas = document.getElementById('rulerCanvas');
@@ -2470,7 +2195,6 @@
           return;
         }
 
-        // 1. DMX Automation Tracks
         state.tracks.forEach(track => {
           const meta = ROLE_META[track.role] || ROLE_META.custom;
           const row = document.createElement('div');
@@ -2501,21 +2225,15 @@
           `;
 
           const header = row.querySelector('.track-header');
-          header.addEventListener('contextmenu', (e) => {
-            e.preventDefault();
-            openTrackSettingsModal(track.id);
-          });
-          header.querySelector('.btn-trk-gear').addEventListener('click', () => {
-            openTrackSettingsModal(track.id);
-          });
+          header.addEventListener('contextmenu', e => { e.preventDefault(); openTrackSettingsModal(track.id); });
+          header.querySelector('.btn-trk-gear').addEventListener('click', () => openTrackSettingsModal(track.id));
 
           const canvas = row.querySelector('canvas');
-          attachAutomationCanvasEvents(canvas, track, meta.color, false);
+          attachAutomationCanvasEvents(canvas, track, meta.color);
           drawAutomationCanvas(canvas, track.keyframes, meta.color);
           container.appendChild(row);
         });
 
-        // 2. Movie Tracks (Opacity Automation)
         state.movieTracks.forEach(mov => {
           const row = document.createElement('div');
           row.className = 'track-row';
@@ -2541,21 +2259,15 @@
           `;
 
           const header = row.querySelector('.track-header');
-          header.addEventListener('contextmenu', (e) => {
-            e.preventDefault();
-            openMovieSettingsModal(mov.id);
-          });
-          header.querySelector('.btn-mov-gear').addEventListener('click', () => {
-            openMovieSettingsModal(mov.id);
-          });
+          header.addEventListener('contextmenu', e => { e.preventDefault(); openMovieSettingsModal(mov.id); });
+          header.querySelector('.btn-mov-gear').addEventListener('click', () => openMovieSettingsModal(mov.id));
 
           const canvas = row.querySelector('canvas');
-          attachAutomationCanvasEvents(canvas, mov, '#b388ff', true);
+          attachAutomationCanvasEvents(canvas, mov, '#b388ff');
           drawAutomationCanvas(canvas, mov.keyframes, '#b388ff');
           container.appendChild(row);
         });
 
-        // 3. Extracted Audio Waveform Tracks
         state.audioTracks.forEach(aud => {
           const row = document.createElement('div');
           row.className = 'track-row';
@@ -2584,8 +2296,7 @@
             renderTimeline();
           });
 
-          const canvas = row.querySelector('canvas');
-          drawAudioWaveformCanvas(canvas, aud);
+          drawAudioWaveformCanvas(row.querySelector('canvas'), aud);
           container.appendChild(row);
         });
 
@@ -2594,11 +2305,9 @@
 
       function drawAutomationCanvas(canvas, keyframes, strokeColor, previewState = null) {
         const ctx = canvas.getContext('2d');
-        const w = canvas.width;
-        const h = canvas.height;
+        const w = canvas.width, h = canvas.height;
         ctx.clearRect(0, 0, w, h);
 
-        // Background beat & bar grid
         const totalBeats = getTotalBeats();
         for (let b = 0; b <= totalBeats; b++) {
           const x = beatToX(b);
@@ -2609,7 +2318,6 @@
           ctx.lineTo(x, h);
           ctx.stroke();
         }
-        // Horizontal 50% guide
         ctx.strokeStyle = '#1b2231';
         ctx.beginPath();
         ctx.moveTo(0, h * 0.5);
@@ -2618,7 +2326,6 @@
 
         if (!keyframes || keyframes.length === 0) return;
 
-        // Sample evaluated curve for crisp rendering including Bezier segments
         ctx.save();
         ctx.beginPath();
         const firstX = beatToX(keyframes[0].beat);
@@ -2627,10 +2334,8 @@
         ctx.lineTo(firstX, firstY);
 
         for (let i = 0; i < keyframes.length - 1; i++) {
-          const k0 = keyframes[i];
-          const k1 = keyframes[i + 1];
-          const x0 = beatToX(k0.beat);
-          const x1 = beatToX(k1.beat);
+          const k0 = keyframes[i], k1 = keyframes[i + 1];
+          const x0 = beatToX(k0.beat), x1 = beatToX(k1.beat);
           if (k0.cp2 || k1.cp1) {
             const steps = Math.max(12, Math.ceil((x1 - x0) / 4));
             for (let s = 1; s <= steps; s++) {
@@ -2642,14 +2347,11 @@
           }
         }
         const last = keyframes[keyframes.length - 1];
-        const lastY = valToY(last.value, h);
-        ctx.lineTo(w, lastY);
-
+        ctx.lineTo(w, valToY(last.value, h));
         ctx.strokeStyle = strokeColor;
         ctx.lineWidth = 2;
         ctx.stroke();
 
-        // Fill under curve
         ctx.lineTo(w, h);
         ctx.lineTo(0, h);
         ctx.closePath();
@@ -2657,50 +2359,28 @@
         ctx.fill();
         ctx.restore();
 
-        // Draw Bezier handles & Keyframe nodes
         keyframes.forEach(kf => {
-          const kx = beatToX(kf.beat);
-          const ky = valToY(kf.value, h);
-
+          const kx = beatToX(kf.beat), ky = valToY(kf.value, h);
           if (kf.cp1) {
-            const hx = beatToX(kf.cp1.beat);
-            const hy = valToY(kf.cp1.value, h);
+            const hx = beatToX(kf.cp1.beat), hy = valToY(kf.cp1.value, h);
             ctx.strokeStyle = '#ff9100aa';
-            ctx.lineWidth = 1;
-            ctx.beginPath();
-            ctx.moveTo(kx, ky);
-            ctx.lineTo(hx, hy);
-            ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(kx, ky); ctx.lineTo(hx, hy); ctx.stroke();
             ctx.fillStyle = '#ff9100';
-            ctx.beginPath();
-            ctx.arc(hx, hy, 3.5, 0, Math.PI * 2);
-            ctx.fill();
+            ctx.beginPath(); ctx.arc(hx, hy, 3.5, 0, Math.PI * 2); ctx.fill();
           }
           if (kf.cp2) {
-            const hx = beatToX(kf.cp2.beat);
-            const hy = valToY(kf.cp2.value, h);
+            const hx = beatToX(kf.cp2.beat), hy = valToY(kf.cp2.value, h);
             ctx.strokeStyle = '#00e5ffaa';
-            ctx.lineWidth = 1;
-            ctx.beginPath();
-            ctx.moveTo(kx, ky);
-            ctx.lineTo(hx, hy);
-            ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(kx, ky); ctx.lineTo(hx, hy); ctx.stroke();
             ctx.fillStyle = '#00e5ff';
-            ctx.beginPath();
-            ctx.arc(hx, hy, 3.5, 0, Math.PI * 2);
-            ctx.fill();
+            ctx.beginPath(); ctx.arc(hx, hy, 3.5, 0, Math.PI * 2); ctx.fill();
           }
-
           ctx.fillStyle = '#0d1017';
           ctx.strokeStyle = strokeColor;
           ctx.lineWidth = 1.8;
-          ctx.beginPath();
-          ctx.arc(kx, ky, 3.6, 0, Math.PI * 2);
-          ctx.fill();
-          ctx.stroke();
+          ctx.beginPath(); ctx.arc(kx, ky, 3.6, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
         });
 
-        // Live Tool Preview Overlay
         if (previewState && previewState.points && previewState.points.length > 1) {
           ctx.save();
           ctx.strokeStyle = '#ffffff';
@@ -2708,8 +2388,7 @@
           ctx.lineWidth = 1.8;
           ctx.beginPath();
           previewState.points.forEach((pt, idx) => {
-            const px = beatToX(pt.beat);
-            const py = valToY(pt.value, h);
+            const px = beatToX(pt.beat), py = valToY(pt.value, h);
             if (idx === 0) ctx.moveTo(px, py);
             else ctx.lineTo(px, py);
           });
@@ -2720,18 +2399,14 @@
 
       function drawAudioWaveformCanvas(canvas, aud) {
         const ctx = canvas.getContext('2d');
-        const w = canvas.width;
-        const h = canvas.height;
+        const w = canvas.width, h = canvas.height;
         ctx.clearRect(0, 0, w, h);
 
         const totalBeats = getTotalBeats();
         for (let b = 0; b <= totalBeats; b += 4) {
           const x = beatToX(b);
           ctx.strokeStyle = '#252e40';
-          ctx.beginPath();
-          ctx.moveTo(x, 0);
-          ctx.lineTo(x, h);
-          ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke();
         }
 
         if (!aud.peaks || aud.peaks.length === 0) return;
@@ -2758,23 +2433,15 @@
       function buildShapePoints(tool, startPt, endPt) {
         const b0 = startPt.beat, v0 = startPt.value;
         const b1 = endPt.beat, v1 = endPt.value;
-        if (Math.abs(b1 - b0) < 1e-4) {
-          return [{ id: nextId('kf'), beat: b0, value: v1 }];
-        }
-        const minB = Math.min(b0, b1);
-        const maxB = Math.max(b0, b1);
-        const startV = b0 <= b1 ? v0 : v1;
-        const endV = b0 <= b1 ? v1 : v0;
+        if (Math.abs(b1 - b0) < 1e-4) return [{ id: nextId('kf'), beat: b0, value: v1 }];
+        const minB = Math.min(b0, b1), maxB = Math.max(b0, b1);
+        const startV = b0 <= b1 ? v0 : v1, endV = b0 <= b1 ? v1 : v0;
 
         if (tool === 'line') {
-          return [
-            { id: nextId('kf'), beat: minB, value: startV },
-            { id: nextId('kf'), beat: maxB, value: endV }
-          ];
+          return [{ id: nextId('kf'), beat: minB, value: startV }, { id: nextId('kf'), beat: maxB, value: endV }];
         }
         if (tool === 'parabola') {
-          const steps = 16;
-          const pts = [];
+          const steps = 16, pts = [];
           for (let i = 0; i <= steps; i++) {
             const t = i / steps;
             const eased = state.parabolaConvex ? (1 - (1 - t) * (1 - t)) : (t * t);
@@ -2789,18 +2456,8 @@
         if (tool === 'bezier') {
           const span = maxB - minB;
           return [
-            {
-              id: nextId('kf'),
-              beat: minB,
-              value: startV,
-              cp2: { beat: Number((minB + span * 0.35).toFixed(4)), value: startV }
-            },
-            {
-              id: nextId('kf'),
-              beat: maxB,
-              value: endV,
-              cp1: { beat: Number((maxB - span * 0.35).toFixed(4)), value: endV }
-            }
+            { id: nextId('kf'), beat: minB, value: startV, cp2: { beat: Number((minB + span * 0.35).toFixed(4)), value: startV } },
+            { id: nextId('kf'), beat: maxB, value: endV, cp1: { beat: Number((maxB - span * 0.35).toFixed(4)), value: endV } }
           ];
         }
         return [];
@@ -2814,7 +2471,7 @@
         trackObj.keyframes = [...kept, ...newPts].sort((a, b) => a.beat - b.beat);
       }
 
-      function attachAutomationCanvasEvents(canvas, trackObj, color, isMovie) {
+      function attachAutomationCanvasEvents(canvas, trackObj, color) {
         canvas.addEventListener('contextmenu', e => e.preventDefault());
 
         canvas.addEventListener('dblclick', e => {
@@ -2826,6 +2483,7 @@
           trackObj.keyframes.sort((a, b) => a.beat - b.beat);
           drawAutomationCanvas(canvas, trackObj.keyframes, color);
           evaluateAtBeat(state.currentBeat);
+          notifyTutorialAction('curve_edited');
         });
 
         canvas.addEventListener('mousedown', e => {
@@ -2840,11 +2498,7 @@
           const startPt = { beat: xToBeat(startX), value: yToVal(startY, canvas.height) };
 
           if (activeTool === 'select') {
-            // Find nearest Bezier handle or keyframe within 9px
-            let targetHandle = null;
-            let targetKf = null;
-            let bestDist = 10;
-
+            let targetHandle = null, targetKf = null, bestDist = 10;
             trackObj.keyframes.forEach(kf => {
               if (kf.cp1) {
                 const d = Math.hypot(beatToX(kf.cp1.beat) - startX, valToY(kf.cp1.value, canvas.height) - startY);
@@ -2861,11 +2515,9 @@
             if (!targetKf && !targetHandle) return;
             pushUndo();
 
-            const onMove = (ev) => {
+            const onMove = ev => {
               const b = Math.max(0, Math.min(getTotalBeats(), (ev.clientX - rect.left) / state.pixelsPerBeat));
-              const snappedB = (state.snapBeat > 0 && !ev.shiftKey)
-                ? Math.round(b / state.snapBeat) * state.snapBeat
-                : b;
+              const snappedB = (state.snapBeat > 0 && !ev.shiftKey) ? Math.round(b / state.snapBeat) * state.snapBeat : b;
               const v = yToVal(ev.clientY - rect.top, canvas.height);
 
               if (targetHandle) {
@@ -2882,10 +2534,10 @@
               drawAutomationCanvas(canvas, trackObj.keyframes, color);
               evaluateAtBeat(state.currentBeat);
             };
-
             const onUp = () => {
               window.removeEventListener('mousemove', onMove);
               window.removeEventListener('mouseup', onUp);
+              notifyTutorialAction('curve_edited');
             };
             window.addEventListener('mousemove', onMove);
             window.addEventListener('mouseup', onUp);
@@ -2895,14 +2547,12 @@
           if (activeTool === 'erase') {
             pushUndo();
             let minB = startPt.beat, maxB = startPt.beat;
-            const eraseAt = (ev) => {
+            const eraseAt = ev => {
               const b = Math.max(0, Math.min(getTotalBeats(), (ev.clientX - rect.left) / state.pixelsPerBeat));
               minB = Math.min(minB, b - 0.15);
               maxB = Math.max(maxB, b + 0.15);
               trackObj.keyframes = trackObj.keyframes.filter(k => k.beat < minB || k.beat > maxB);
-              if (trackObj.keyframes.length === 0) {
-                trackObj.keyframes.push({ id: nextId('kf'), beat: 0, value: 0 });
-              }
+              if (trackObj.keyframes.length === 0) trackObj.keyframes.push({ id: nextId('kf'), beat: 0, value: 0 });
               drawAutomationCanvas(canvas, trackObj.keyframes, color);
               evaluateAtBeat(state.currentBeat);
             };
@@ -2910,6 +2560,7 @@
             const onUp = () => {
               window.removeEventListener('mousemove', eraseAt);
               window.removeEventListener('mouseup', onUp);
+              notifyTutorialAction('curve_edited');
             };
             window.addEventListener('mousemove', eraseAt);
             window.addEventListener('mouseup', onUp);
@@ -2923,51 +2574,40 @@
               beat: Math.max(0, Math.min(getTotalBeats(), startX / state.pixelsPerBeat)),
               value: startPt.value
             }];
-
-            const onMove = (ev) => {
+            const onMove = ev => {
               const b = Math.max(0, Math.min(getTotalBeats(), (ev.clientX - rect.left) / state.pixelsPerBeat));
               const v = yToVal(ev.clientY - rect.top, canvas.height);
               rawPts.push({ id: nextId('kf'), beat: Number(b.toFixed(4)), value: v });
               const sorted = [...rawPts].sort((a, b) => a.beat - b.beat);
               drawAutomationCanvas(canvas, trackObj.keyframes, color, { points: sorted });
             };
-
             const onUp = () => {
               window.removeEventListener('mousemove', onMove);
               window.removeEventListener('mouseup', onUp);
-              let finalPts = [...rawPts].sort((a, b) => a.beat - b.beat);
-              // Deduplicate close beats
+              const sorted = [...rawPts].sort((a, b) => a.beat - b.beat);
               const dedup = [];
-              finalPts.forEach(p => {
-                if (dedup.length === 0 || Math.abs(p.beat - dedup[dedup.length - 1].beat) > 0.01) {
-                  dedup.push(p);
-                } else {
-                  dedup[dedup.length - 1] = p;
-                }
+              sorted.forEach(p => {
+                if (dedup.length === 0 || Math.abs(p.beat - dedup[dedup.length - 1].beat) > 0.01) dedup.push(p);
+                else dedup[dedup.length - 1] = p;
               });
-              finalPts = state.autoSmooth ? smoothKeyframes(dedup, state.smoothStrength) : dedup;
+              const finalPts = state.autoSmooth ? smoothKeyframes(dedup, state.smoothStrength) : dedup;
               replaceKeyframesInRange(trackObj, finalPts);
               drawAutomationCanvas(canvas, trackObj.keyframes, color);
               evaluateAtBeat(state.currentBeat);
+              notifyTutorialAction('curve_edited');
             };
             window.addEventListener('mousemove', onMove);
             window.addEventListener('mouseup', onUp);
             return;
           }
 
-          // Shape tools: line, parabola, bezier
           if (activeTool === 'line' || activeTool === 'parabola' || activeTool === 'bezier') {
             let previewPts = buildShapePoints(activeTool, startPt, startPt);
-
-            const onMove = (ev) => {
-              const curPt = {
-                beat: xToBeat(ev.clientX - rect.left),
-                value: yToVal(ev.clientY - rect.top, canvas.height)
-              };
+            const onMove = ev => {
+              const curPt = { beat: xToBeat(ev.clientX - rect.left), value: yToVal(ev.clientY - rect.top, canvas.height) };
               previewPts = buildShapePoints(activeTool, startPt, curPt);
               drawAutomationCanvas(canvas, trackObj.keyframes, color, { points: previewPts });
             };
-
             const onUp = () => {
               window.removeEventListener('mousemove', onMove);
               window.removeEventListener('mouseup', onUp);
@@ -2975,6 +2615,7 @@
               replaceKeyframesInRange(trackObj, previewPts);
               drawAutomationCanvas(canvas, trackObj.keyframes, color);
               evaluateAtBeat(state.currentBeat);
+              notifyTutorialAction('curve_edited');
             };
             window.addEventListener('mousemove', onMove);
             window.addEventListener('mouseup', onUp);
@@ -3002,6 +2643,7 @@
         state.isPlaying = true;
         document.getElementById('btnPlay').textContent = '❚❚ 一時停止';
         startAudioPlaybackFromBeat(state.currentBeat);
+        notifyTutorialAction('playback_started');
       }
 
       function pausePlayback() {
@@ -3018,27 +2660,21 @@
         evaluateAtBeat(0);
       }
 
-      // Ruler scrubbing
       const rulerCanvas = document.getElementById('rulerCanvas');
       rulerCanvas.addEventListener('mousedown', e => {
         const rect = rulerCanvas.getBoundingClientRect();
-        const seek = (ev) => {
-          const x = ev.clientX - rect.left;
-          state.currentBeat = Math.max(0, Math.min(getTotalBeats(), x / state.pixelsPerBeat));
+        const seek = ev => {
+          state.currentBeat = Math.max(0, Math.min(getTotalBeats(), (ev.clientX - rect.left) / state.pixelsPerBeat));
           updatePlayheadUI();
           evaluateAtBeat(state.currentBeat);
           if (state.isPlaying) startAudioPlaybackFromBeat(state.currentBeat);
         };
         seek(e);
-        const onUp = () => {
-          window.removeEventListener('mousemove', seek);
-          window.removeEventListener('mouseup', onUp);
-        };
+        const onUp = () => { window.removeEventListener('mousemove', seek); window.removeEventListener('mouseup', onUp); };
         window.addEventListener('mousemove', seek);
         window.addEventListener('mouseup', onUp);
       });
 
-      // Main Animation Loop (3D Rendering + Playback Clock)
       let lastFrameTime = performance.now();
       function mainLoop(now) {
         requestAnimationFrame(mainLoop);
@@ -3046,8 +2682,7 @@
         lastFrameTime = now;
 
         if (state.isPlaying) {
-          const beatsPerSec = state.bpm / 60;
-          state.currentBeat += dt * beatsPerSec;
+          state.currentBeat += dt * (state.bpm / 60);
           const maxBeats = getTotalBeats();
           if (state.currentBeat >= maxBeats) {
             if (state.loop) {
@@ -3066,7 +2701,6 @@
         controls.update();
         renderer.render(scene, camera);
 
-        // Refresh DMX Monitor if open
         if (document.getElementById('modalDmxMonitor').classList.contains('open')) {
           updateDmxMonitorCells();
         }
@@ -3100,16 +2734,18 @@
         btn.addEventListener('click', () => {
           state.leftTool = btn.dataset.tool;
           updateToolRibbonUI();
+          notifyTutorialAction('tool_assigned');
         });
         btn.addEventListener('contextmenu', e => {
           e.preventDefault();
           state.rightTool = btn.dataset.tool;
           updateToolRibbonUI();
+          notifyTutorialAction('tool_assigned');
         });
       });
 
       // =========================================================
-      // 11. Modals (Add Fixture, Track Settings + 8 Sends, Movie Settings, 512ch Monitor)
+      // 11. Modals (Track Settings, Movie Settings, 512ch Monitor)
       // =========================================================
       let editingTrackId = null;
       let editingSends = [];
@@ -3124,7 +2760,6 @@
         document.getElementById('tsTrackName').value = track.name;
         document.getElementById('tsTrackRole').value = track.role;
         document.getElementById('tsTrackCh').value = track.channel;
-
         renderSendsEditor();
 
         const fxSection = document.getElementById('tsFixtureSection');
@@ -3146,6 +2781,7 @@
         }
 
         document.getElementById('modalTrackSettings').classList.add('open');
+        notifyTutorialAction('track_settings_opened');
       }
 
       function renderSendsEditor() {
@@ -3184,10 +2820,7 @@
       }
 
       document.getElementById('btnAddSend').addEventListener('click', () => {
-        if (editingSends.length >= 8) {
-          showToast('Send先は最大8つまで登録できます');
-          return;
-        }
+        if (editingSends.length >= 8) { showToast('Send先は最大8つまで登録できます'); return; }
         editingSends.push({ channel: 1, amount: 100 });
         renderSendsEditor();
       });
@@ -3252,7 +2885,6 @@
         showToast('トラックを削除しました');
       });
 
-      // Movie Settings Modal
       let editingMovieId = null;
       function openMovieSettingsModal(movieId) {
         const mov = state.movieTracks.find(m => m.id === movieId);
@@ -3300,7 +2932,6 @@
         renderTimeline();
       });
 
-      // 512ch Monitor Grid Init
       function initDmxMonitorGrid() {
         const grid = document.getElementById('dmxMonitorGrid');
         let html = '';
@@ -3325,7 +2956,313 @@
       }
 
       // =========================================================
-      // 12. UI Event Wiring
+      // 12. Tutorial & Interactive Training Mode Engine
+      // =========================================================
+      const TUTORIAL_STEPS = [
+        {
+          targetId: 'stagePane',
+          title: '1. 3Dバーチャルステージ ＆ ステージサイズ設定',
+          desc: '左ペインの3Dステージで照明ビームや床面スポット照射をリアルタイムにプレビューできます。右上の「📐 ステージ設定」から横幅・奥行き（m）も自由に変更可能です。',
+          mission: '3Dステージ画面を「左ドラッグで回転」または上部の「Persp / Front / Top / Side」ボタンで視点を動かしてみましょう。',
+          actionKey: 'stage_camera_moved',
+          demoLabel: '⚡ カメラアングルを自動切替',
+          runDemo: () => {
+            camera.position.set(6.5, 5.2, 11.5);
+            controls.target.set(0, 1.8, 0);
+            notifyTutorialAction('stage_camera_moved');
+            showToast('3Dカメラ視点を変更しました');
+          }
+        },
+        {
+          targetId: 'btnOpenAddFixture',
+          title: '2. 3D照明機器登録 ＆ DMXトラック自動生成',
+          desc: '「+ 機器登録」から機器タイプ・3D座標 (X,Y,Z)・アングル・ビーム角度 (2°〜90°)・スタートアドレス・チャンネル数を入力すると、3Dステージ配置とDMXトラックが自動生成されます。',
+          mission: '「+ 機器登録」ボタンを押して登録モーダルを開くか、下の自動デモボタンで新しいムービングスポットを追加してみましょう。',
+          actionKey: 'fixture_added',
+          demoLabel: '⚡ センターにスポットライトを自動登録',
+          runDemo: () => {
+            let maxCh = 0;
+            state.tracks.forEach(t => { if (t.channel > maxCh) maxCh = t.channel; });
+            createFixtureAndTracks({
+              name: `Center Beam ${state.fixtures.length + 1}`,
+              type: 'spot',
+              pos: { x: 0, y: 4.5, z: -1.5 },
+              rot: { x: 180, y: 0, z: 0 },
+              beamAngle: 14,
+              beamLength: 12,
+              startAddr: Math.min(512, maxCh + 1),
+              chCount: 4,
+              templateKey: 'dim_rgb'
+            });
+            const newTracks = state.tracks.slice(-4);
+            if (newTracks.length === 4) {
+              newTracks[0].keyframes = [{ id: nextId('kf'), beat: 0, value: 1 }];
+              newTracks[1].keyframes = [{ id: nextId('kf'), beat: 0, value: 1 }];
+              newTracks[3].keyframes = [{ id: nextId('kf'), beat: 0, value: 0.8 }];
+            }
+            renderTimeline();
+            evaluateAtBeat(state.currentBeat);
+          }
+        },
+        {
+          targetId: 'transportControls',
+          title: '3. RGB加算 × Dimmer最大1.0倍乗算のリアル調光',
+          desc: 'バーチャルステージでは、Red/Green/Blue等の足し算で光の色と量を生成し、そこにDimmer（0.0〜最大1.0倍）が掛け算されます。そのため、RGBが0のままではDimmerを上げても光りません。',
+          mission: '「▶ 再生」ボタン（または Spaceキー）を押して、左スポットと右スポットのフェードの違いを3Dで確認しましょう！',
+          actionKey: 'playback_started',
+          demoLabel: '⚡ タイムラインを再生開始',
+          runDemo: () => {
+            startPlayback();
+          }
+        },
+        {
+          targetId: 'toolRibbonArea',
+          title: '4. 左右マウスボタン独立ツール割当（L / R ハイライト）',
+          desc: '描画ツールボタンを「左クリック」すると左ボタン（シアン枠・Lバッジ）、「右クリック」すると右ボタン（オレンジ枠・Rバッジ）に独立して登録できます。描画と選択編集を瞬時に使い分けられます。',
+          mission: 'ツールバーの「╱ 直線」や「∿ ベジェ曲線」などを左クリックまたは右クリックして割り当ててみましょう。',
+          actionKey: 'tool_assigned',
+          demoLabel: '⚡ L=ベジェ曲線 / R=選択 に自動割当',
+          runDemo: () => {
+            state.leftTool = 'bezier';
+            state.rightTool = 'select';
+            updateToolRibbonUI();
+            notifyTutorialAction('tool_assigned');
+            showToast('左クリック=ベジェ曲線 / 右クリック=選択 に設定しました');
+          }
+        },
+        {
+          targetId: 'timelinePane',
+          title: '5. オートメーション描画 ＆ 自動スムージング',
+          desc: 'フリーハンド・直線・放物線・3次ベジェ曲線で直感的にカーブを描画できます。「✨ 自動スムーズ: ON」の状態なら、フリーハンドで描いた手ブレも自動的に滑らかなキーフレームへ補正されます。',
+          mission: 'いずれかのトラックの波形エリア上でマウスをドラッグして、オートメーションカーブを描いてみましょう！',
+          actionKey: 'curve_edited',
+          demoLabel: '⚡ 1トラック目にサンプルカーブを自動描画',
+          runDemo: () => {
+            const trk = state.tracks[0];
+            if (trk) {
+              pushUndo();
+              trk.keyframes = [
+                { id: nextId('kf'), beat: 0, value: 0.1 },
+                { id: nextId('kf'), beat: 3, value: 0.95 },
+                { id: nextId('kf'), beat: 6, value: 0.25 },
+                { id: nextId('kf'), beat: 10, value: 1.0 },
+                { id: nextId('kf'), beat: 16, value: 0 }
+              ];
+              renderTimeline();
+              evaluateAtBeat(state.currentBeat);
+              notifyTutorialAction('curve_edited');
+              showToast('サンプルオートメーションカーブを描画しました');
+            }
+          }
+        },
+        {
+          targetId: 'tracksContainer',
+          title: '6. トラック右クリック設定 ＆ 最大8系統Sendルーティング',
+          desc: 'トラック左側のヘッダーを「右クリック」（または ⚙ ボタン）すると設定画面が開きます。機能ロール（R/G/B/Dimmer/Pan/Tilt等）の変更、最大8CHまでの同時Send送信（マイナス値で反転送信も可）、所属機器の座標・ビーム角度・削除が行えます。',
+          mission: 'トラックヘッダーを右クリック（または ⚙ ボタンをクリック）して詳細設定モーダルを開いてみましょう。',
+          actionKey: 'track_settings_opened',
+          demoLabel: '⚡ 1トラック目の設定モーダルを開く',
+          runDemo: () => {
+            if (state.tracks.length > 0) openTrackSettingsModal(state.tracks[0].id);
+          }
+        },
+        {
+          targetId: 'btnAddMovie',
+          title: '7. ムービートラック ＆ 3D LEDスクリーン投影・音声自動分離',
+          desc: '「🎬 + ムービー」から動画ファイル（MP4, WebM, MOV等）を読み込むと、3DステージのLEDスクリーンに投影され、不透明度オートメーションでフェード演出が可能になります。さらに動画内の音声は自動分離され、下のオーディオトラックへ波形付きで追加されます。',
+          mission: 'ボタンを押して手持ちの動画を読み込むか、下のボタンで3D仮想LEDスクリーン配置を確認してみましょう。',
+          actionKey: 'movie_explored',
+          demoLabel: '⚡ 3D LEDスクリーン配置デモを表示',
+          runDemo: () => {
+            if (state.movieTracks.length === 0) {
+              pushUndo();
+              const mov = {
+                id: nextId('mov'),
+                name: 'Sample_LED_Backdrop.mp4',
+                duration: 16,
+                keyframes: [
+                  { id: nextId('kf'), beat: 0, value: 0.2 },
+                  { id: nextId('kf'), beat: 4, value: 1.0 },
+                  { id: nextId('kf'), beat: 16, value: 0.2 }
+                ],
+                screen: { pos: { x: 0, y: 2.4, z: -state.stageSize.depth * 0.45 }, rot: { x: 0, y: 0, z: 0 }, width: 6.4, height: 3.6, gain: 1.0 },
+                videoEl: null, texture: null, mesh: null
+              };
+              const c = document.createElement('canvas');
+              c.width = 512; c.height = 256;
+              const cx = c.getContext('2d');
+              const grad = cx.createLinearGradient(0, 0, 512, 256);
+              grad.addColorStop(0, '#00e5ff'); grad.addColorStop(0.5, '#7c4dff'); grad.addColorStop(1, '#ff4081');
+              cx.fillStyle = grad; cx.fillRect(0, 0, 512, 256);
+              cx.fillStyle = '#fff'; cx.font = 'bold 34px sans-serif'; cx.textAlign = 'center';
+              cx.fillText('3D LED SCREEN DEMO', 256, 138);
+              mov.texture = new THREE.CanvasTexture(c);
+              createMovieScreen3D(mov);
+              state.movieTracks.push(mov);
+              renderTimeline();
+              evaluateAtBeat(state.currentBeat);
+            }
+            notifyTutorialAction('movie_explored');
+            showToast('3Dステージ奥にLEDスクリーンを配置しました');
+          }
+        },
+        {
+          targetId: 'dmxHardwareGroup',
+          title: '8. DMX USBインターフェイス接続 ＆ 512chモニター',
+          desc: 'ENTTEC DMX USB PRO や Open DMX USB をPCに接続し、「🔌 USB接続」からシリアルポートを選択すると実機の照明をリアルタイム制御できます（※Web Serial APIの仕様上、http://localhost または https:// 環境で動作します）。「512ch」ボタンで全チャンネルの出力値も一覧確認できます。',
+          mission: '「512ch」ボタンを押して全512チャンネルのリアルタイム出力モニターを確認してみましょう。',
+          actionKey: 'dmx_monitor_opened',
+          demoLabel: '⚡ 512ch モニターを開く',
+          runDemo: () => {
+            updateDmxMonitorCells();
+            document.getElementById('modalDmxMonitor').classList.add('open');
+            notifyTutorialAction('dmx_monitor_opened');
+          }
+        },
+        {
+          targetId: 'projectActionsGroup',
+          title: '9. プロジェクト保存・Undo・すべてクリア（トレーニング完了！）',
+          desc: '「💾 保存 / 📂 読込」でステージ配置やオートメーションをJSONファイルとして保存・復元できます。操作を間違えたときは「↶ Undo (Ctrl+Z)」、最初から作り直したいときは「🗑 すべてクリア」をご利用ください。',
+          mission: '以上でチュートリアルは完了です！「完了して終了」を押して自由なライティング制作をお楽しみください。',
+          actionKey: 'completed',
+          demoLabel: null,
+          runDemo: null
+        }
+      ];
+
+      const tutorialState = {
+        active: false,
+        stepIndex: 0,
+        completedKeys: new Set()
+      };
+
+      function notifyTutorialAction(actionKey) {
+        if (!tutorialState.active) return;
+        tutorialState.completedKeys.add(actionKey);
+        const curStep = TUTORIAL_STEPS[tutorialState.stepIndex];
+        if (curStep && curStep.actionKey === actionKey) {
+          renderTutorialStep();
+        }
+      }
+
+      function positionTutorialSpotlight() {
+        const spot = document.getElementById('tutorialSpotlight');
+        if (!tutorialState.active) {
+          spot.classList.remove('active');
+          return;
+        }
+        const step = TUTORIAL_STEPS[tutorialState.stepIndex];
+        const targetEl = step ? document.getElementById(step.targetId) : null;
+        if (!targetEl) {
+          spot.classList.remove('active');
+          return;
+        }
+        const rect = targetEl.getBoundingClientRect();
+        const pad = 4;
+        spot.style.top = `${Math.max(0, rect.top - pad)}px`;
+        spot.style.left = `${Math.max(0, rect.left - pad)}px`;
+        spot.style.width = `${Math.min(window.innerWidth, rect.width + pad * 2)}px`;
+        spot.style.height = `${Math.min(window.innerHeight, rect.height + pad * 2)}px`;
+        spot.classList.add('active');
+      }
+
+      function renderTutorialStep() {
+        const idx = tutorialState.stepIndex;
+        const total = TUTORIAL_STEPS.length;
+        const step = TUTORIAL_STEPS[idx];
+        const isDone = tutorialState.completedKeys.has(step.actionKey) || step.actionKey === 'completed';
+
+        document.getElementById('tutStepBadge').textContent = `STEP ${idx + 1} / ${total}`;
+        document.getElementById('tutProgressFill').style.width = `${((idx + 1) / total) * 100}%`;
+        document.getElementById('tutTitle').textContent = step.title;
+        document.getElementById('tutDesc').textContent = step.desc;
+
+        const missionBox = document.getElementById('tutMissionBox');
+        missionBox.classList.toggle('completed', isDone);
+        document.getElementById('tutMissionLabel').textContent = isDone ? '✅ トレーニング達成！' : '🎯 トレーニング課題';
+        document.getElementById('tutMissionStatus').textContent = isDone ? 'CLEAR' : '操作待機中';
+        document.getElementById('tutMissionText').textContent = step.mission;
+
+        const demoWrap = document.getElementById('tutDemoActionWrap');
+        const demoBtn = document.getElementById('btnTutDemoAction');
+        if (step.demoLabel && step.runDemo) {
+          demoWrap.style.display = 'block';
+          demoBtn.textContent = step.demoLabel;
+        } else {
+          demoWrap.style.display = 'none';
+        }
+
+        document.getElementById('btnTutPrev').disabled = idx === 0;
+        document.getElementById('btnTutNext').textContent = idx === total - 1 ? '✔ 完了して終了' : '次へ ▶';
+
+        positionTutorialSpotlight();
+      }
+
+      function startTutorialMode() {
+        tutorialState.active = true;
+        tutorialState.stepIndex = 0;
+        tutorialState.completedKeys.clear();
+        document.getElementById('tutorialCard').classList.add('active');
+        renderTutorialStep();
+      }
+
+      function endTutorialMode() {
+        tutorialState.active = false;
+        document.getElementById('tutorialCard').classList.remove('active');
+        document.getElementById('tutorialSpotlight').classList.remove('active');
+      }
+
+      document.getElementById('btnStartTutorial').addEventListener('click', startTutorialMode);
+      document.getElementById('btnTutClose').addEventListener('click', endTutorialMode);
+      document.getElementById('btnTutPrev').addEventListener('click', () => {
+        if (tutorialState.stepIndex > 0) {
+          tutorialState.stepIndex--;
+          renderTutorialStep();
+        }
+      });
+      document.getElementById('btnTutNext').addEventListener('click', () => {
+        if (tutorialState.stepIndex < TUTORIAL_STEPS.length - 1) {
+          tutorialState.stepIndex++;
+          renderTutorialStep();
+        } else {
+          endTutorialMode();
+          showToast('チュートリアル＆トレーニングを完了しました！');
+        }
+      });
+      document.getElementById('btnTutDemoAction').addEventListener('click', () => {
+        const step = TUTORIAL_STEPS[tutorialState.stepIndex];
+        if (step && step.runDemo) step.runDemo();
+      });
+
+      // Make Tutorial Card draggable by its header so it never blocks user workspace
+      const tutCard = document.getElementById('tutorialCard');
+      const tutHeader = document.getElementById('tutDragHeader');
+      tutHeader.addEventListener('mousedown', e => {
+        if (e.target.closest('button')) return;
+        const rect = tutCard.getBoundingClientRect();
+        const offsetX = e.clientX - rect.left;
+        const offsetY = e.clientY - rect.top;
+        const onMove = ev => {
+          tutCard.style.right = 'auto';
+          tutCard.style.bottom = 'auto';
+          tutCard.style.left = `${Math.max(8, Math.min(window.innerWidth - rect.width - 8, ev.clientX - offsetX))}px`;
+          tutCard.style.top = `${Math.max(8, Math.min(window.innerHeight - rect.height - 8, ev.clientY - offsetY))}px`;
+        };
+        const onUp = () => {
+          window.removeEventListener('mousemove', onMove);
+          window.removeEventListener('mouseup', onUp);
+        };
+        window.addEventListener('mousemove', onMove);
+        window.addEventListener('mouseup', onUp);
+      });
+
+      window.addEventListener('resize', positionTutorialSpotlight);
+
+      // Detect camera drag on 3D stage for Tutorial Step 1
+      controls.addEventListener('start', () => notifyTutorialAction('stage_camera_moved'));
+
+      // =========================================================
+      // 13. General UI Event Wiring
       // =========================================================
       function escapeHtml(str) {
         return String(str).replace(/[&<>"']/g, s => ({
@@ -3333,10 +3270,7 @@
         }[s]));
       }
 
-      // Transport buttons
-      document.getElementById('btnPlay').addEventListener('click', () => {
-        state.isPlaying ? pausePlayback() : startPlayback();
-      });
+      document.getElementById('btnPlay').addEventListener('click', () => state.isPlaying ? pausePlayback() : startPlayback());
       document.getElementById('btnStop').addEventListener('click', stopPlayback);
       document.getElementById('btnLoop').addEventListener('click', e => {
         state.loop = !state.loop;
@@ -3377,23 +3311,20 @@
       document.getElementById('btnDmxMonitor').addEventListener('click', () => {
         updateDmxMonitorCells();
         document.getElementById('modalDmxMonitor').classList.add('open');
+        notifyTutorialAction('dmx_monitor_opened');
       });
       document.getElementById('btnCloseDmxMonitor').addEventListener('click', () => {
         document.getElementById('modalDmxMonitor').classList.remove('open');
       });
 
       document.getElementById('btnUndo').addEventListener('click', () => {
-        if (state.undoStack.length === 0) {
-          showToast('これ以上戻せる履歴がありません');
-          return;
-        }
+        if (state.undoStack.length === 0) { showToast('これ以上戻せる履歴がありません'); return; }
         restoreProjectData(state.undoStack.pop(), true);
         showToast('操作を元に戻しました');
       });
 
       document.getElementById('btnClearAll').addEventListener('click', clearAllProject);
 
-      // Save / Load JSON
       document.getElementById('btnSaveJson').addEventListener('click', () => {
         const blob = new Blob([serializeProjectData()], { type: 'application/json' });
         const a = document.createElement('a');
@@ -3403,10 +3334,7 @@
         showToast('プロジェクトをJSON保存しました');
       });
 
-      document.getElementById('btnLoadJson').addEventListener('click', () => {
-        document.getElementById('fileLoadJson').click();
-      });
-
+      document.getElementById('btnLoadJson').addEventListener('click', () => document.getElementById('fileLoadJson').click());
       document.getElementById('fileLoadJson').addEventListener('change', async e => {
         const file = e.target.files[0];
         if (!file) return;
@@ -3417,7 +3345,6 @@
         e.target.value = '';
       });
 
-      // Smoothing & Zoom controls
       document.getElementById('btnParabolaMode').addEventListener('click', e => {
         state.parabolaConvex = !state.parabolaConvex;
         e.currentTarget.textContent = `放物線: ${state.parabolaConvex ? '凸型' : '凹型'}`;
@@ -3446,28 +3373,14 @@
         showToast(`「${trk.name}」のカーブを平滑化しました`);
       });
 
-      document.getElementById('selSnap').addEventListener('change', e => {
-        state.snapBeat = Number(e.target.value);
-      });
+      document.getElementById('selSnap').addEventListener('change', e => { state.snapBeat = Number(e.target.value); });
+      document.getElementById('sliderZoomX').addEventListener('input', e => { state.pixelsPerBeat = Number(e.target.value); renderTimeline(); });
+      document.getElementById('sliderTrackH').addEventListener('input', e => { state.trackHeight = Number(e.target.value); renderTimeline(); });
 
-      document.getElementById('sliderZoomX').addEventListener('input', e => {
-        state.pixelsPerBeat = Number(e.target.value);
-        renderTimeline();
-      });
-
-      document.getElementById('sliderTrackH').addEventListener('input', e => {
-        state.trackHeight = Number(e.target.value);
-        renderTimeline();
-      });
-
-      // Stage Size Popover Controls
+      // Stage Size Popover
       const stagePopover = document.getElementById('stageSizePopover');
-      document.getElementById('btnStageSettings').addEventListener('click', () => {
-        stagePopover.classList.toggle('open');
-      });
-      document.getElementById('btnCloseStagePopover').addEventListener('click', () => {
-        stagePopover.classList.remove('open');
-      });
+      document.getElementById('btnStageSettings').addEventListener('click', () => stagePopover.classList.toggle('open'));
+      document.getElementById('btnCloseStagePopover').addEventListener('click', () => stagePopover.classList.remove('open'));
 
       function applyStageSize(w, d) {
         state.stageSize.width = Math.max(4, Math.min(50, Number(w) || 12));
@@ -3477,12 +3390,8 @@
         rebuildStageFloor();
       }
 
-      document.getElementById('inpStageWidth').addEventListener('input', e => {
-        applyStageSize(e.target.value, state.stageSize.depth);
-      });
-      document.getElementById('inpStageDepth').addEventListener('input', e => {
-        applyStageSize(state.stageSize.width, e.target.value);
-      });
+      document.getElementById('inpStageWidth').addEventListener('input', e => applyStageSize(e.target.value, state.stageSize.depth));
+      document.getElementById('inpStageDepth').addEventListener('input', e => applyStageSize(state.stageSize.width, e.target.value));
       document.querySelectorAll('.stage-preset-btn').forEach(btn => {
         btn.addEventListener('click', () => {
           pushUndo();
@@ -3491,28 +3400,15 @@
         });
       });
 
-      // Camera presets
-      document.getElementById('btnCamPersp').addEventListener('click', () => {
-        camera.position.set(0, 6.5, 13.5);
-        controls.target.set(0, 1.8, 0);
-      });
-      document.getElementById('btnCamFront').addEventListener('click', () => {
-        camera.position.set(0, 2.8, 15);
-        controls.target.set(0, 2.2, 0);
-      });
-      document.getElementById('btnCamTop').addEventListener('click', () => {
-        camera.position.set(0, 18, 0.01);
-        controls.target.set(0, 0, 0);
-      });
-      document.getElementById('btnCamSide').addEventListener('click', () => {
-        camera.position.set(15, 3.2, 0);
-        controls.target.set(0, 2.0, 0);
-      });
+      // Camera Presets
+      document.getElementById('btnCamPersp').addEventListener('click', () => { camera.position.set(0, 6.5, 13.5); controls.target.set(0, 1.8, 0); notifyTutorialAction('stage_camera_moved'); });
+      document.getElementById('btnCamFront').addEventListener('click', () => { camera.position.set(0, 2.8, 15); controls.target.set(0, 2.2, 0); notifyTutorialAction('stage_camera_moved'); });
+      document.getElementById('btnCamTop').addEventListener('click', () => { camera.position.set(0, 18, 0.01); controls.target.set(0, 0, 0); notifyTutorialAction('stage_camera_moved'); });
+      document.getElementById('btnCamSide').addEventListener('click', () => { camera.position.set(15, 3.2, 0); controls.target.set(0, 2.0, 0); notifyTutorialAction('stage_camera_moved'); });
 
-      // Add Fixture Modal Controls
+      // Add Fixture Modal
       document.getElementById('btnOpenAddFixture').addEventListener('click', () => {
         const nextNum = state.fixtures.length + 1;
-        // Auto-suggest next free DMX address
         let maxUsed = 0;
         state.tracks.forEach(t => { if (t.channel > maxUsed) maxUsed = t.channel; });
         document.getElementById('fxName').value = `Moving Spot ${nextNum}`;
@@ -3525,36 +3421,18 @@
         if (roles) document.getElementById('fxChCount').value = roles.length;
       });
 
-      document.getElementById('btnPresetHang').addEventListener('click', () => {
-        document.getElementById('fxPosY').value = 4.5;
-        document.getElementById('fxRotX').value = 180;
-      });
-      document.getElementById('btnPresetFloor').addEventListener('click', () => {
-        document.getElementById('fxPosY').value = 0.2;
-        document.getElementById('fxRotX').value = 0;
-      });
+      document.getElementById('btnPresetHang').addEventListener('click', () => { document.getElementById('fxPosY').value = 4.5; document.getElementById('fxRotX').value = 180; });
+      document.getElementById('btnPresetFloor').addEventListener('click', () => { document.getElementById('fxPosY').value = 0.2; document.getElementById('fxRotX').value = 0; });
 
-      document.getElementById('btnCloseAddFixture').addEventListener('click', () => {
-        document.getElementById('modalAddFixture').classList.remove('open');
-      });
-      document.getElementById('btnCancelAddFixture').addEventListener('click', () => {
-        document.getElementById('modalAddFixture').classList.remove('open');
-      });
+      document.getElementById('btnCloseAddFixture').addEventListener('click', () => document.getElementById('modalAddFixture').classList.remove('open'));
+      document.getElementById('btnCancelAddFixture').addEventListener('click', () => document.getElementById('modalAddFixture').classList.remove('open'));
 
       document.getElementById('btnConfirmAddFixture').addEventListener('click', () => {
         createFixtureAndTracks({
           name: document.getElementById('fxName').value.trim(),
           type: document.getElementById('fxType').value,
-          pos: {
-            x: document.getElementById('fxPosX').value,
-            y: document.getElementById('fxPosY').value,
-            z: document.getElementById('fxPosZ').value
-          },
-          rot: {
-            x: document.getElementById('fxRotX').value,
-            y: document.getElementById('fxRotY').value,
-            z: document.getElementById('fxRotZ').value
-          },
+          pos: { x: document.getElementById('fxPosX').value, y: document.getElementById('fxPosY').value, z: document.getElementById('fxPosZ').value },
+          rot: { x: document.getElementById('fxRotX').value, y: document.getElementById('fxRotY').value, z: document.getElementById('fxRotZ').value },
           beamAngle: document.getElementById('fxBeamAngle').value,
           beamLength: document.getElementById('fxBeamLength').value,
           startAddr: document.getElementById('fxStartAddr').value,
@@ -3564,21 +3442,11 @@
         document.getElementById('modalAddFixture').classList.remove('open');
       });
 
-      // Close Track & Movie Modals
-      document.getElementById('btnCloseTrackSettings').addEventListener('click', () => {
-        document.getElementById('modalTrackSettings').classList.remove('open');
-      });
-      document.getElementById('btnCancelTrackSettings').addEventListener('click', () => {
-        document.getElementById('modalTrackSettings').classList.remove('open');
-      });
-      document.getElementById('btnCloseMovieSettings').addEventListener('click', () => {
-        document.getElementById('modalMovieSettings').classList.remove('open');
-      });
-      document.getElementById('btnCancelMovieSettings').addEventListener('click', () => {
-        document.getElementById('modalMovieSettings').classList.remove('open');
-      });
+      document.getElementById('btnCloseTrackSettings').addEventListener('click', () => document.getElementById('modalTrackSettings').classList.remove('open'));
+      document.getElementById('btnCancelTrackSettings').addEventListener('click', () => document.getElementById('modalTrackSettings').classList.remove('open'));
+      document.getElementById('btnCloseMovieSettings').addEventListener('click', () => document.getElementById('modalMovieSettings').classList.remove('open'));
+      document.getElementById('btnCancelMovieSettings').addEventListener('click', () => document.getElementById('modalMovieSettings').classList.remove('open'));
 
-      // Manual DMX Track & Movie Import
       document.getElementById('btnAddManualTrack').addEventListener('click', () => {
         pushUndo();
         let maxUsed = 0;
@@ -3596,12 +3464,13 @@
         renderTimeline();
       });
 
-      document.getElementById('btnAddMovie').addEventListener('click', () => {
-        document.getElementById('fileMovieInput').click();
-      });
+      document.getElementById('btnAddMovie').addEventListener('click', () => document.getElementById('fileMovieInput').click());
       document.getElementById('fileMovieInput').addEventListener('change', async e => {
         const file = e.target.files[0];
-        if (file) await handleMovieFileImport(file);
+        if (file) {
+          await handleMovieFileImport(file);
+          notifyTutorialAction('movie_explored');
+        }
         e.target.value = '';
       });
 
@@ -3613,11 +3482,9 @@
         const onMove = ev => {
           const pct = Math.max(22, Math.min(68, (ev.clientX / window.innerWidth) * 100));
           stagePane.style.width = `${pct}%`;
+          positionTutorialSpotlight();
         };
-        const onUp = () => {
-          window.removeEventListener('mousemove', onMove);
-          window.removeEventListener('mouseup', onUp);
-        };
+        const onUp = () => { window.removeEventListener('mousemove', onMove); window.removeEventListener('mouseup', onUp); };
         window.addEventListener('mousemove', onMove);
         window.addEventListener('mouseup', onUp);
       });
@@ -3630,17 +3497,17 @@
           camera.updateProjectionMatrix();
           renderer.setSize(w, h, false);
         }
+        positionTutorialSpotlight();
       });
       resizeObserver.observe(stageWrap);
 
       // =========================================================
-      // 13. Initial Demo Setup
+      // 14. Initial Demo Setup
       // =========================================================
       rebuildStageFloor();
       initDmxMonitorGrid();
       updateToolRibbonUI();
 
-      // Create 2 initial demo fixtures so user can immediately test RGB + Dimmer & 3D Beams
       createFixtureAndTracks({
         name: 'Spot Left',
         type: 'spot',
@@ -3665,9 +3532,7 @@
         templateKey: 'dim_rgb'
       });
 
-      // Set sample automation on Spot Left (Dimmer + Cyan RGB) and Spot Right (Dimmer=255, RGB=0 to verify no light without RGB)
       if (state.tracks.length >= 8) {
-        // Spot Left: Dimmer fades up, Red=0, Green=0.8, Blue=1.0
         state.tracks[0].keyframes = [
           { id: nextId('kf'), beat: 0, value: 0 },
           { id: nextId('kf'), beat: 4, value: 1 },
@@ -3677,7 +3542,6 @@
         state.tracks[2].keyframes = [{ id: nextId('kf'), beat: 0, value: 0.75 }];
         state.tracks[3].keyframes = [{ id: nextId('kf'), beat: 0, value: 1.0 }];
 
-        // Spot Right: Dimmer at 100%, RGB starts at 0 then fades in at beat 4
         state.tracks[4].keyframes = [{ id: nextId('kf'), beat: 0, value: 1.0 }];
         state.tracks[5].keyframes = [
           { id: nextId('kf'), beat: 0, value: 0 },
@@ -3686,7 +3550,6 @@
         ];
       }
 
-      // Clear initial setup from Undo stack so Undo starts clean from user edits
       state.undoStack = [];
       renderTimeline();
       evaluateAtBeat(0);
